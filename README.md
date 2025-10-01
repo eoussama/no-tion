@@ -2,10 +2,13 @@
 
 A personal Notion account manager that provides forms to automate data insertion into Notion databases using the Notion API.
 
+Built with Nuxt 3 with server-side API integration for secure Notion API key handling.
+
 ## Prerequisites
 
 - Node.js `^20.19.0` or `>=22.12.0`
 - pnpm (recommended) or npm
+- Notion Integration Token
 
 ## Project Setup
 
@@ -18,7 +21,7 @@ pnpm install
 Create a `.env` file in the root directory with your Notion API key:
 
 ```sh
-VITE_NOTION_API_KEY=your_notion_integration_token_here
+NUXT_NOTION_API_KEY=your_notion_integration_token_here
 ```
 
 To get your Notion API key:
@@ -36,7 +39,7 @@ Start the development server with hot-reload:
 pnpm dev
 ```
 
-The application will be available at `http://localhost:5173`
+The application will be available at `http://localhost:3000`
 
 ## Production Build
 
@@ -52,12 +55,10 @@ Preview the production build locally:
 pnpm preview
 ```
 
-## Testing
-
-Run unit tests with Vitest:
+Generate static site:
 
 ```sh
-pnpm test:unit
+pnpm generate
 ```
 
 ## Code Quality
@@ -73,6 +74,15 @@ Format code:
 ```sh
 pnpm format
 ```
+
+## Architecture
+
+- **Nuxt 3** - Full-stack Vue framework with server-side rendering
+- **Server API Routes** - Notion API calls handled securely on the server
+- **TypeScript** - Type-safe development
+- **Notion SDK** - Official Notion JavaScript SDK
+
+All Notion API calls are made server-side to keep your API key secure and never expose it to the client.
 
 ## Notion API Integration
 
