@@ -24,6 +24,9 @@ const databaseName = computed(() => database.value?.title || databaseKey.replace
 const sourceType = ref<"IMDB" | "OTHER">("IMDB");
 const imdbUrl = ref("");
 const otherUrl = ref("");
+const otherTitle = ref("");
+const otherPosterUrl = ref("");
+const otherType = ref("Movie");
 const imdbSearchQuery = ref("");
 const imdbSearchResults = ref<Array<{
   id: string;
@@ -125,8 +128,11 @@ function clearSelection() {
 watch(sourceType, () => {
   // Clear IMDB inputs
   clearSelection();
-  // Clear OTHER input
+  // Clear OTHER inputs
   otherUrl.value = "";
+  otherTitle.value = "";
+  otherPosterUrl.value = "";
+  otherType.value = "Movie";
 });
 
 // Handle click outside
@@ -310,13 +316,81 @@ onUnmounted(() => {
 
         <!-- Other URL Input -->
         <div v-if="sourceType === 'OTHER'" class="form-section">
-          <label class="form-label">URL</label>
-          <input
-            v-model="otherUrl"
-            type="url"
-            placeholder="https://..."
-            class="form-input"
-          >
+          <div class="movie-details">
+            <div class="movie-details-form">
+              <div class="form-field">
+                <label class="form-label">Title</label>
+                <input
+                  v-model="otherTitle"
+                  type="text"
+                  placeholder="Enter title"
+                  class="form-input"
+                >
+              </div>
+
+              <div class="form-field">
+                <label class="form-label">Type</label>
+                <select v-model="otherType" class="form-input">
+                  <option value="Movie">
+                    Movie
+                  </option>
+                  <option value="TV Series">
+                    TV Series
+                  </option>
+                  <option value="TV Mini-Series">
+                    TV Mini-Series
+                  </option>
+                  <option value="TV Special">
+                    TV Special
+                  </option>
+                  <option value="TV Movie">
+                    TV Movie
+                  </option>
+                  <option value="Short">
+                    Short
+                  </option>
+                  <option value="Documentary">
+                    Documentary
+                  </option>
+                  <option value="Video">
+                    Video
+                  </option>
+                  <option value="Video Game">
+                    Video Game
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label">URL</label>
+                <input
+                  v-model="otherUrl"
+                  type="url"
+                  placeholder="https://..."
+                  class="form-input"
+                >
+              </div>
+
+              <div class="form-field">
+                <label class="form-label">Poster URL</label>
+                <input
+                  v-model="otherPosterUrl"
+                  type="url"
+                  placeholder="https://..."
+                  class="form-input"
+                >
+              </div>
+            </div>
+
+            <div class="movie-details-poster">
+              <div v-if="otherPosterUrl" class="movie-poster">
+                <img :src="otherPosterUrl" :alt="otherTitle || 'Poster'">
+              </div>
+              <div v-else class="movie-poster-placeholder">
+                <span>No Poster</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
