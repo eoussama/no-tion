@@ -454,7 +454,7 @@ async function refetch() {
   border-radius: 3px;
   cursor: pointer;
   opacity: 0;
-  transition: all 20ms ease-in;
+  transition: opacity 20ms ease-in;
   font-family: inherit;
 }
 
@@ -462,19 +462,9 @@ async function refetch() {
   opacity: 1;
 }
 
-.database-item-action:hover {
-  background: rgba(55, 53, 47, 0.08);
-  color: var(--color-text);
-}
-
 @media (prefers-color-scheme: dark) {
   .database-item-action {
     color: rgba(255, 255, 255, 0.45);
-  }
-
-  .database-item-action:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.81);
   }
 }
 

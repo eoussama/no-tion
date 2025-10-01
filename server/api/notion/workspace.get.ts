@@ -23,7 +23,7 @@ export type TNotionWorkspace = {
 export type TNotionWorkspaceData = {
   user: TNullable<TNotionUser>;
   workspace: TNullable<TNotionWorkspace>;
-  databases: TNotionDatabase[];
+  databases: Array<TNotionDatabase>;
 };
 
 export default defineEventHandler(async (event): Promise<TNotionWorkspaceData> => {
@@ -72,21 +72,34 @@ export default defineEventHandler(async (event): Promise<TNotionWorkspaceData> =
       }
     }
 
-    // Fetch databases
-    const response = await notion.search({
-      sort: { direction: "descending", timestamp: "last_edited_time" },
-    }) as { results: Array<{ object: string; id: string; [key: string]: unknown }> };
+    // Fetch specific databases by ID
+    const databaseIds = [
+      "279d999481b3811e8041d1b324f31226",
+    ];
 
-    const databases: TNotionDatabase[] = response.results
-      .filter(result => result.object === "database")
-      .map((db) => {
-        return {
-          id: db.id,
-          title: (db.title as Array<{ plain_text?: string }>)?.[0]?.plain_text || "Untitled Database",
-          icon: (db.icon as { emoji?: string; external?: { url?: string } })?.emoji || (db.icon as { emoji?: string; external?: { url?: string } })?.external?.url || undefined,
-          lastEditedTime: new Date(db.last_edited_time as string).toLocaleString(),
+    const databases: Array<TNotionDatabase> = [];
+
+    for (const databaseId of databaseIds) {
+      try {
+        const db = await notion.databases.retrieve({ database_id: databaseId }) as {
+          id: string;
+          title: Array<{ plain_text?: string }>;
+          icon?: { emoji?: string; external?: { url?: string } };
+          last_edited_time: string;
+          [key: string]: unknown;
         };
-      });
+
+        databases.push({
+          id: db.id,
+          title: db.title?.[0]?.plain_text || "Untitled Database",
+          icon: db.icon?.emoji || db.icon?.external?.url || undefined,
+          lastEditedTime: new Date(db.last_edited_time).toLocaleString(),
+        });
+      }
+      catch (err) {
+        console.error("Failed to fetch database", databaseId, ":", err instanceof Error ? err.message : String(err));
+      }
+    }
 
     return {
       user,
