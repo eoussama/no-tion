@@ -24,6 +24,61 @@ const databaseName = computed(() => database.value?.title || databaseKey.replace
 const sourceType = ref<"IMDB" | "OTHER">("IMDB");
 const imdbUrl = ref("");
 const otherUrl = ref("");
+const imdbSearchQuery = ref("");
+const imdbSearchResults = ref<Array<{
+  id: string;
+  primaryTitle: string;
+  type: string;
+  startYear?: number;
+}>>([]);
+const isSearching = ref(false);
+const selectedImdbTitle = ref<string>("");
+
+// Debounced search function
+async function searchImdb() {
+  if (imdbSearchQuery.value.length < 2) {
+    imdbSearchResults.value = [];
+
+    return;
+  }
+
+  isSearching.value = true;
+
+  try {
+    const response = await $fetch<{ titles: Array<{
+      id: string;
+      primaryTitle: string;
+      type: string;
+      startYear?: number;
+    }>; }>("/api/imdb/search", {
+      params: { q: imdbSearchQuery.value },
+    });
+
+    imdbSearchResults.value = response.titles || [];
+  }
+  catch (error) {
+    console.error("Search error:", error);
+    imdbSearchResults.value = [];
+  }
+  finally {
+    isSearching.value = false;
+  }
+}
+
+// Debounce the search
+let searchTimeout: ReturnType<typeof setTimeout>;
+
+watch(imdbSearchQuery, () => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(searchImdb, 300);
+});
+
+function selectTitle(title: { id: string; primaryTitle: string; type: string; startYear?: number }) {
+  selectedImdbTitle.value = `${title.primaryTitle} (${title.startYear || "N/A"})`;
+  imdbUrl.value = `https://www.imdb.com/title/${title.id}/`;
+  imdbSearchQuery.value = "";
+  imdbSearchResults.value = [];
+}
 </script>
 
 <template>
@@ -86,13 +141,44 @@ const otherUrl = ref("");
 
         <!-- IMDB URL Input -->
         <div v-if="sourceType === 'IMDB'" class="form-section">
-          <label class="form-label">IMDB URL</label>
-          <input
-            v-model="imdbUrl"
-            type="url"
-            placeholder="https://www.imdb.com/title/..."
-            class="form-input"
-          >
+          <label class="form-label">Search IMDB Title</label>
+          <div class="autocomplete-container">
+            <input
+              v-model="imdbSearchQuery"
+              type="text"
+              placeholder="Start typing a movie or TV show name..."
+              class="form-input"
+              @focus="() => {}"
+            >
+            <div v-if="isSearching" class="autocomplete-loading">
+              Searching...
+            </div>
+            <div v-if="imdbSearchResults.length > 0" class="autocomplete-results">
+              <button
+                v-for="title in imdbSearchResults"
+                :key="title.id"
+                type="button"
+                class="autocomplete-item"
+                @click="selectTitle(title)"
+              >
+                <div class="autocomplete-item-title">
+                  {{ title.primaryTitle }}
+                </div>
+                <div class="autocomplete-item-meta">
+                  {{ title.type }} • {{ title.startYear || 'N/A' }}
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div v-if="selectedImdbTitle" class="selected-title">
+            <div class="selected-title-label">
+              Selected:
+            </div>
+            <div class="selected-title-value">
+              {{ selectedImdbTitle }}
+            </div>
+          </div>
         </div>
 
         <!-- Other URL Input -->
@@ -205,6 +291,7 @@ const otherUrl = ref("");
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-bottom: 24px;
 }
 
 .form-label {
@@ -341,6 +428,130 @@ const otherUrl = ref("");
   .form-input::placeholder {
     color: rgba(255, 255, 255, 0.4);
   }
+}
+
+/* Autocomplete */
+.autocomplete-container {
+  position: relative;
+}
+
+.autocomplete-loading {
+  padding: 12px;
+  font-size: 14px;
+  color: rgba(55, 53, 47, 0.65);
+  text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .autocomplete-loading {
+    color: rgba(255, 255, 255, 0.45);
+  }
+}
+
+.autocomplete-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: white;
+  border-radius: 3px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+@media (prefers-color-scheme: dark) {
+  .autocomplete-results {
+    background: rgba(32, 32, 32, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.autocomplete-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background 20ms ease-in;
+  text-align: left;
+  font-family: inherit;
+  border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover {
+  background: rgba(55, 53, 47, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  .autocomplete-item {
+    border-bottom-color: rgba(255, 255, 255, 0.09);
+  }
+
+  .autocomplete-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.autocomplete-item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.autocomplete-item-meta {
+  font-size: 12px;
+  color: rgba(55, 53, 47, 0.65);
+}
+
+@media (prefers-color-scheme: dark) {
+  .autocomplete-item-meta {
+    color: rgba(255, 255, 255, 0.45);
+  }
+}
+
+/* Selected Title */
+.selected-title {
+  padding: 12px;
+  background: rgba(35, 131, 226, 0.08);
+  border-radius: 3px;
+  border: 1px solid rgba(35, 131, 226, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+  .selected-title {
+    background: rgba(35, 131, 226, 0.12);
+    border-color: rgba(35, 131, 226, 0.3);
+  }
+}
+
+.selected-title-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(55, 53, 47, 0.65);
+  margin-bottom: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .selected-title-label {
+    color: rgba(255, 255, 255, 0.45);
+  }
+}
+
+.selected-title-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
 }
 
 /* Responsive */
