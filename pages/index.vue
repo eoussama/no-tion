@@ -76,9 +76,10 @@ async function refetch() {
         </div>
 
         <div v-else class="database-list">
-          <div
+          <NuxtLink
             v-for="db in databases"
             :key="db.id"
+            :to="`/database/${db.id}`"
             class="database-item"
           >
             <div class="database-item-icon">
@@ -93,11 +94,11 @@ async function refetch() {
                 Last edited {{ db.lastEditedTime }}
               </div>
             </div>
-            <button class="database-item-action">
+            <div class="database-item-action">
               <span>Open</span>
               <ChevronRight :size="12" />
-            </button>
-          </div>
+            </div>
+          </NuxtLink>
         </div>
       </div>
     </div>
@@ -384,6 +385,8 @@ async function refetch() {
   cursor: pointer;
   transition: background 20ms ease-in;
   min-height: 42px;
+  text-decoration: none;
+  color: inherit;
 }
 
 .database-item:hover {
@@ -451,9 +454,7 @@ async function refetch() {
   font-weight: 500;
   color: rgba(55, 53, 47, 0.65);
   background: transparent;
-  border: none;
   border-radius: 3px;
-  cursor: pointer;
   opacity: 0;
   transition: opacity 20ms ease-in;
   font-family: inherit;
