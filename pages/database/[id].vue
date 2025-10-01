@@ -39,6 +39,17 @@ const isSearching = ref(false);
 const selectedImdbTitle = ref<{ id: string; primaryTitle: string; type: string; startYear?: number; primaryImage?: { url: string } } | null>(null);
 const showResults = ref(false);
 const autocompleteRef = ref<HTMLElement | null>(null);
+const isSubmitting = ref(false);
+
+// Computed validation for form
+const isFormValid = computed(() => {
+  if (sourceType.value === "IMDB") {
+    return selectedImdbTitle.value !== null && imdbUrl.value !== "";
+  }
+  else {
+    return otherTitle.value !== "" && otherUrl.value !== "" && otherType.value !== "";
+  }
+});
 
 // Debounced search function
 async function searchImdb() {
@@ -134,6 +145,56 @@ watch(sourceType, () => {
   otherPosterUrl.value = "";
   otherType.value = "Movie";
 });
+
+// Submit function
+async function handleSubmit() {
+  if (!isFormValid.value || isSubmitting.value) {
+    return;
+  }
+
+  isSubmitting.value = true;
+
+  try {
+    const payload = sourceType.value === "IMDB"
+      ? {
+          title: selectedImdbTitle.value!.primaryTitle,
+          type: formatTitleType(selectedImdbTitle.value!.type),
+          url: imdbUrl.value,
+          posterUrl: selectedImdbTitle.value!.primaryImage?.url || "",
+        }
+      : {
+          title: otherTitle.value,
+          type: otherType.value,
+          url: otherUrl.value,
+          posterUrl: otherPosterUrl.value,
+        };
+
+    await $fetch("/api/notion/database/add", {
+      method: "POST",
+      body: {
+        databaseId,
+        ...payload,
+      },
+    });
+
+    // Clear form after successful submission
+    if (sourceType.value === "IMDB") {
+      clearSelection();
+    }
+    else {
+      otherTitle.value = "";
+      otherUrl.value = "";
+      otherPosterUrl.value = "";
+      otherType.value = "Movie";
+    }
+  }
+  catch (error) {
+    console.error("Error adding entry:", error);
+  }
+  finally {
+    isSubmitting.value = false;
+  }
+}
 
 // Handle click outside
 function handleClickOutside(event: MouseEvent) {
@@ -392,6 +453,17 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
+
+        <!-- Submit Button -->
+        <div class="form-section">
+          <button
+            :disabled="!isFormValid || isSubmitting"
+            class="submit-button"
+            @click="handleSubmit"
+          >
+            {{ isSubmitting ? 'Adding...' : 'Add Entry' }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -573,6 +645,37 @@ onUnmounted(() => {
 
 .radio-option-active .radio-label {
   color: var(--color-text);
+}
+
+/* Submit Button */
+.submit-button {
+  padding: 8px 16px;
+  border-radius: 3px;
+  border: none;
+  background: #2383e2;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 20ms ease-in;
+  align-self: flex-start;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #1a6dc7;
+}
+
+.submit-button:disabled {
+  background: rgba(55, 53, 47, 0.16);
+  color: rgba(55, 53, 47, 0.4);
+  cursor: not-allowed;
+}
+
+@media (prefers-color-scheme: dark) {
+  .submit-button:disabled {
+    background: rgba(255, 255, 255, 0.094);
+    color: rgba(255, 255, 255, 0.3);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
