@@ -1,8 +1,11 @@
-# no-tion
+<p align="center">
+  <img width="120" src="https://github.com/eoussama/no-tion/blob/main/public/logo.png?raw=true">
+</p>
 
+<p align="center">
 A personal Notion account manager that provides forms to automate data insertion into Notion databases using the Notion API.
-
 Built with Nuxt 3 with server-side API integration for secure Notion API key handling.
+</p>
 
 ## Prerequisites
 
