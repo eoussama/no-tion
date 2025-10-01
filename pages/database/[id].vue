@@ -41,6 +41,9 @@ const showResults = ref(false);
 const autocompleteRef = ref<HTMLElement | null>(null);
 const isSubmitting = ref(false);
 
+// Toast state
+const toast = ref<{ message: string; type: "success" | "error" } | null>(null);
+
 // Computed validation for form
 const isFormValid = computed(() => {
   if (sourceType.value === "IMDB") {
@@ -146,6 +149,14 @@ watch(sourceType, () => {
   otherType.value = "Movie";
 });
 
+// Show toast notification
+function showToast(message: string, type: "success" | "error") {
+  toast.value = { message, type };
+  setTimeout(() => {
+    toast.value = null;
+  }, 3000);
+}
+
 // Submit function
 async function handleSubmit() {
   if (!isFormValid.value || isSubmitting.value) {
@@ -187,9 +198,14 @@ async function handleSubmit() {
       otherPosterUrl.value = "";
       otherType.value = "Movie";
     }
+
+    // Show success toast
+    showToast("Entry added successfully!", "success");
   }
   catch (error) {
     console.error("Error adding entry:", error);
+    // Show error toast
+    showToast("Failed to add entry. Please try again.", "error");
   }
   finally {
     isSubmitting.value = false;
@@ -466,6 +482,13 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
+
+    <!-- Toast Notification -->
+    <Transition name="toast">
+      <div v-if="toast" class="toast" :class="`toast-${toast.type}`">
+        {{ toast.message }}
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -1056,5 +1079,45 @@ onUnmounted(() => {
   .breadcrumb {
     font-size: 13px;
   }
+}
+
+/* Toast Notification */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-width: 400px;
+}
+
+.toast-success {
+  background: #10b981;
+  color: white;
+}
+
+.toast-error {
+  background: #ef4444;
+  color: white;
+}
+
+/* Toast transitions */
+.toast-enter-active,
+.toast-leave-active {
+  transition: all 0.3s ease;
+}
+
+.toast-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.toast-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 </style>
