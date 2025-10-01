@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { AlertCircle, ChevronRight, Database, Loader2 } from "lucide-vue-next";
+
+
+
 const { data, error: fetchError, pending } = await useFetch("/api/notion/workspace");
 
-const user = computed(() => data.value?.user || null);
 const databases = computed(() => data.value?.databases || []);
 const loading = computed(() => pending.value);
 const error = computed(() => fetchError.value?.statusMessage || null);
@@ -13,66 +16,37 @@ async function refetch() {
 
 <template>
   <div class="page">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <div class="breadcrumb-item breadcrumb-item-current">
+        <span>Home</span>
+      </div>
+    </nav>
+
     <!-- Page Header -->
     <div class="page-header">
-      <div class="page-icon">
-        <img src="/logo.png" alt="no-tion">
-      </div>
       <h1 class="page-title">
-        no-tion Dashboard
+        Dashboard
       </h1>
     </div>
 
     <!-- Page Content -->
     <div class="page-body">
-      <!-- Workspace Info -->
-      <div class="section">
-        <div v-if="loading" class="loading-state">
-          <div class="spinner" />
-          <span>Loading workspace...</span>
+      <!-- Error State -->
+      <div v-if="error" class="callout callout-warning">
+        <div class="callout-icon">
+          <AlertCircle :size="20" />
         </div>
-
-        <div v-else-if="error" class="callout callout-warning">
-          <div class="callout-icon">
-            ⚠️
+        <div class="callout-content">
+          <div class="callout-title">
+            Configuration Required
           </div>
-          <div class="callout-content">
-            <div class="callout-title">
-              Configuration Required
-            </div>
-            <div class="callout-text">
-              {{ error }}
-            </div>
-            <button class="notion-button" @click="refetch">
-              Retry Connection
-            </button>
+          <div class="callout-text">
+            {{ error }}
           </div>
-        </div>
-
-        <div v-else-if="user" class="workspace-info">
-          <div class="info-row">
-            <span class="info-label">Workspace</span>
-            <div class="info-value">
-              <div class="user-badge">
-                <div v-if="user.avatarUrl" class="user-avatar">
-                  <img :src="user.avatarUrl" :alt="user.name">
-                </div>
-                <div v-else class="user-avatar user-avatar-fallback">
-                  {{ user.name.charAt(0).toUpperCase() }}
-                </div>
-                <span class="user-name">{{ user.name }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Status</span>
-            <div class="info-value">
-              <span class="status-badge status-connected">
-                <span class="status-dot" />
-                Connected
-              </span>
-            </div>
-          </div>
+          <button class="notion-button" @click="refetch">
+            Retry Connection
+          </button>
         </div>
       </div>
 
@@ -83,13 +57,13 @@ async function refetch() {
         </h2>
 
         <div v-if="loading" class="loading-state">
-          <div class="spinner" />
+          <Loader2 :size="20" class="spinner-icon" />
           <span>Loading databases...</span>
         </div>
 
         <div v-else-if="databases.length === 0" class="empty-state">
           <div class="empty-icon">
-            📋
+            <Database :size="48" />
           </div>
           <div class="empty-title">
             No databases found
@@ -106,7 +80,8 @@ async function refetch() {
             class="database-item"
           >
             <div class="database-item-icon">
-              {{ db.icon || '📊' }}
+              <span v-if="db.icon">{{ db.icon }}</span>
+              <Database v-else :size="18" class="database-icon-fallback" />
             </div>
             <div class="database-item-content">
               <div class="database-item-title">
@@ -118,9 +93,7 @@ async function refetch() {
             </div>
             <button class="database-item-action">
               <span>Open</span>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
+              <ChevronRight :size="12" />
             </button>
           </div>
         </div>
@@ -131,23 +104,69 @@ async function refetch() {
 
 <style scoped>
 .page {
-  padding: 60px 0 80px;
+  padding: 24px 0 80px;
   width: 100%;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: rgba(55, 53, 47, 0.65);
+}
+
+@media (prefers-color-scheme: dark) {
+  .breadcrumb {
+    color: rgba(255, 255, 255, 0.45);
+  }
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background 20ms ease-in;
+  cursor: pointer;
+}
+
+.breadcrumb-item:hover {
+  background: rgba(55, 53, 47, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .breadcrumb-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.breadcrumb-item-current {
+  color: var(--color-text);
+  cursor: default;
+}
+
+.breadcrumb-item-current:hover {
+  background: transparent;
+}
+
+.breadcrumb-separator {
+  flex-shrink: 0;
+  color: rgba(55, 53, 47, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  .breadcrumb-separator {
+    color: rgba(255, 255, 255, 0.3);
+  }
 }
 
 /* Page Header */
 .page-header {
-  margin-bottom: 48px;
-}
-
-.page-icon {
-  margin-bottom: 8px;
-}
-
-.page-icon img {
-  width: 78px;
-  height: 78px;
-  border-radius: 3px;
+  margin-bottom: 32px;
 }
 
 .page-title {
@@ -203,20 +222,9 @@ async function refetch() {
   }
 }
 
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(55, 53, 47, 0.16);
-  border-top-color: rgba(55, 53, 47, 0.65);
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-
-@media (prefers-color-scheme: dark) {
-  .spinner {
-    border-color: rgba(255, 255, 255, 0.16);
-    border-top-color: rgba(255, 255, 255, 0.65);
-  }
+.spinner-icon {
+  flex-shrink: 0;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
@@ -251,8 +259,13 @@ async function refetch() {
 
 .callout-icon {
   flex-shrink: 0;
-  font-size: 18px;
-  line-height: 1.5;
+  color: rgba(55, 53, 47, 0.65);
+}
+
+@media (prefers-color-scheme: dark) {
+  .callout-icon {
+    color: rgba(255, 255, 255, 0.65);
+  }
 }
 
 .callout-content {
@@ -312,106 +325,6 @@ async function refetch() {
   }
 }
 
-/* Workspace Info */
-.workspace-info {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px 0;
-}
-
-.info-row {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  font-size: 14px;
-}
-
-.info-label {
-  min-width: 120px;
-  color: rgba(55, 53, 47, 0.65);
-  font-weight: 500;
-}
-
-@media (prefers-color-scheme: dark) {
-  .info-label {
-    color: rgba(255, 255, 255, 0.45);
-  }
-}
-
-.info-value {
-  color: var(--color-text);
-}
-
-.user-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.user-avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 3px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.user-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.user-avatar-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(55, 53, 47, 0.16) 0%, rgba(55, 53, 47, 0.08) 100%);
-  color: var(--color-text);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.user-name {
-  font-weight: 500;
-}
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border-radius: 3px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.status-connected {
-  background: rgba(38, 178, 119, 0.15);
-  color: rgb(0, 135, 107);
-}
-
-@media (prefers-color-scheme: dark) {
-  .status-connected {
-    background: rgba(38, 178, 119, 0.2);
-    color: rgb(77, 201, 155);
-  }
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: currentColor;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
 /* Empty State */
 .empty-state {
   display: flex;
@@ -422,9 +335,15 @@ async function refetch() {
 }
 
 .empty-icon {
-  font-size: 48px;
   margin-bottom: 16px;
   opacity: 0.4;
+  color: rgba(55, 53, 47, 0.65);
+}
+
+@media (prefers-color-scheme: dark) {
+  .empty-icon {
+    color: rgba(255, 255, 255, 0.45);
+  }
 }
 
 .empty-title {
@@ -483,6 +402,16 @@ async function refetch() {
   justify-content: center;
   font-size: 18px;
   flex-shrink: 0;
+}
+
+.database-icon-fallback {
+  color: rgba(55, 53, 47, 0.45);
+}
+
+@media (prefers-color-scheme: dark) {
+  .database-icon-fallback {
+    color: rgba(255, 255, 255, 0.35);
+  }
 }
 
 .database-item-content {
@@ -551,26 +480,15 @@ async function refetch() {
 /* Responsive */
 @media (max-width: 768px) {
   .page {
-    padding: 40px 0 60px;
-  }
-
-  .page-icon img {
-    width: 64px;
-    height: 64px;
+    padding: 20px 0 60px;
   }
 
   .page-title {
     font-size: 32px;
   }
 
-  .info-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .info-label {
-    min-width: auto;
+  .breadcrumb {
+    font-size: 13px;
   }
 }
 </style>

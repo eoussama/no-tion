@@ -14,8 +14,14 @@ export interface NotionUser {
   avatarUrl?: string;
 }
 
+export interface NotionWorkspace {
+  name: string;
+  icon?: string;
+}
+
 export interface NotionWorkspaceData {
   user: NotionUser | null;
+  workspace: NotionWorkspace | null;
   databases: NotionDatabase[];
 }
 
@@ -36,6 +42,7 @@ export default defineEventHandler(async (event): Promise<NotionWorkspaceData> =>
     // Fetch user info
     const me = await notion.users.me({});
     let user: NotionUser | null = null;
+    let workspace: NotionWorkspace | null = null;
 
     if (me.type === "person" && me.person.email) {
       user = {
@@ -43,11 +50,25 @@ export default defineEventHandler(async (event): Promise<NotionWorkspaceData> =>
         avatarUrl: me.avatar_url || undefined,
       };
     }
-    else if (me.type === "bot" && me.bot.owner.type === "workspace") {
+    else if (me.type === "bot") {
       user = {
-        name: me.bot.owner.workspace ? "Workspace" : me.name || "Bot User",
+        name: me.name || "Bot User",
         avatarUrl: me.avatar_url || undefined,
       };
+
+      // If it's a bot with workspace owner, get workspace details
+      if (me.bot.owner.type === "workspace" && me.bot.owner.workspace) {
+        // Search for any page to trigger workspace detection (result not used)
+        await notion.search({
+          page_size: 1,
+        });
+
+        // Get workspace name from bot owner
+        workspace = {
+          name: me.bot.workspace_name || "Workspace",
+          icon: undefined, // Workspace icon is not directly available via API
+        };
+      }
     }
 
     // Fetch databases
@@ -68,6 +89,7 @@ export default defineEventHandler(async (event): Promise<NotionWorkspaceData> =>
 
     return {
       user,
+      workspace,
       databases,
     };
   }

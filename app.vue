@@ -1,3 +1,17 @@
+<script setup lang="ts">
+import { Building2, XCircle } from "lucide-vue-next";
+
+
+
+const { data, error: fetchError, pending } = await useFetch("/api/notion/workspace");
+
+const workspace = computed(() => data.value?.workspace || null);
+const user = computed(() => data.value?.user || null);
+const loading = computed(() => pending.value);
+const error = computed(() => fetchError.value?.statusMessage || null);
+const isConnected = computed(() => !loading.value && !error.value && (user.value || workspace.value));
+</script>
+
 <template>
   <div class="app-container">
     <header class="topbar">
@@ -5,6 +19,24 @@
         <div class="topbar-left">
           <img alt="no-tion logo" class="logo" src="/logo.png">
           <span class="app-title">no-tion</span>
+        </div>
+
+        <div class="topbar-right">
+          <div v-if="loading" class="header-status">
+            <div class="spinner-small" />
+            <span class="header-status-text">Connecting...</span>
+          </div>
+
+          <div v-else-if="error" class="header-status header-status-error">
+            <XCircle :size="16" />
+            <span class="header-status-text">Not Connected</span>
+          </div>
+
+          <div v-else-if="isConnected" class="header-status header-status-connected">
+            <Building2 :size="16" />
+            <span class="header-status-text">{{ workspace?.name || 'Workspace' }}</span>
+            <span class="header-status-dot" />
+          </div>
         </div>
       </div>
     </header>
@@ -61,6 +93,86 @@
   font-size: 14px;
   font-weight: 600;
   color: var(--color-text);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.header-status-connected {
+  background: rgba(0, 135, 107, 0.1);
+  color: rgb(0, 135, 107);
+}
+
+@media (prefers-color-scheme: dark) {
+  .header-status-connected {
+    background: rgba(0, 200, 117, 0.15);
+    color: rgb(0, 200, 117);
+  }
+}
+
+.header-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  margin-left: 2px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.header-status-error {
+  background: rgba(235, 87, 87, 0.1);
+  color: rgb(235, 87, 87);
+}
+
+@media (prefers-color-scheme: dark) {
+  .header-status-error {
+    background: rgba(235, 87, 87, 0.15);
+    color: rgb(255, 100, 100);
+  }
+}
+
+.header-status-text {
+  white-space: nowrap;
+}
+
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(55, 53, 47, 0.16);
+  border-top-color: rgba(55, 53, 47, 0.65);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+  .spinner-small {
+    border-color: rgba(255, 255, 255, 0.16);
+    border-top-color: rgba(255, 255, 255, 0.65);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .main-content {
