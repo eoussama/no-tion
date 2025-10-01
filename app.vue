@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { TNullable } from "@eoussama/core";
+import type { TNotionWorkspaceData } from "~/core";
 import { Building2, XCircle } from "lucide-vue-next";
 
 
 
-const { data, error: fetchError, pending } = await useFetch("/api/notion/workspace");
+const { data, error: fetchError, pending } = await useFetch<TNotionWorkspaceData>("/api/notion/workspace");
 
 const workspace = computed(() => (data.value?.workspace || null) as TNullable<typeof data.value.workspace>);
 const user = computed(() => (data.value?.user || null) as TNullable<typeof data.value.user>);

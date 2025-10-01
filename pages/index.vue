@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { TNullable } from "@eoussama/core";
+import type { TNotionWorkspaceData } from "~/core";
 import { AlertCircle, ChevronRight, Database, Loader2 } from "lucide-vue-next";
 
 
 
-const { data, error: fetchError, pending } = await useFetch("/api/notion/workspace");
+const { data, error: fetchError, pending } = await useFetch<TNotionWorkspaceData>("/api/notion/workspace");
 
 const databases = computed(() => data.value?.databases || []);
 const loading = computed(() => pending.value);

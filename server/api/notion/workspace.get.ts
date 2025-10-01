@@ -1,30 +1,9 @@
 import type { TNullable } from "@eoussama/core";
+import type { TNotionDatabase, TNotionUser, TNotionWorkspace, TNotionWorkspaceData } from "~/core";
 import { Client } from "@notionhq/client";
+import { DATABASE_IDS } from "~/core";
 
 
-
-export type TNotionDatabase = {
-  id: string;
-  title: string;
-  icon?: string;
-  lastEditedTime: string;
-};
-
-export type TNotionUser = {
-  name: string;
-  avatarUrl?: string;
-};
-
-export type TNotionWorkspace = {
-  name: string;
-  icon?: string;
-};
-
-export type TNotionWorkspaceData = {
-  user: TNullable<TNotionUser>;
-  workspace: TNullable<TNotionWorkspace>;
-  databases: Array<TNotionDatabase>;
-};
 
 export default defineEventHandler(async (event): Promise<TNotionWorkspaceData> => {
   const config = useRuntimeConfig(event);
@@ -73,13 +52,9 @@ export default defineEventHandler(async (event): Promise<TNotionWorkspaceData> =
     }
 
     // Fetch specific databases by ID
-    const databaseIds = [
-      "279d999481b3811e8041d1b324f31226",
-    ];
-
     const databases: Array<TNotionDatabase> = [];
 
-    for (const databaseId of databaseIds) {
+    for (const databaseId of DATABASE_IDS) {
       try {
         const db = await notion.databases.retrieve({ database_id: databaseId }) as {
           id: string;
