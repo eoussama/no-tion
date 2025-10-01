@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { TNotionWorkspaceData } from "~/core";
 import { ChevronRight, Home } from "lucide-vue-next";
 import { DATABASES } from "~/core";
 
@@ -7,8 +8,17 @@ import { DATABASES } from "~/core";
 const route = useRoute();
 const databaseId = route.params.id as string;
 
-// Find the database name from constants
-const databaseName = Object.entries(DATABASES).find(([_, id]) => id === databaseId)?.[0] || "Unknown";
+// Fetch database info from API
+const { data } = await useFetch<TNotionWorkspaceData>("/api/notion/workspace");
+
+// Find the database from the fetched data
+const database = computed(() => data.value?.databases.find(db => db.id === databaseId));
+
+// Find the database key name from constants (e.g., "CINEMA_TV")
+const databaseKey = Object.entries(DATABASES).find(([_, id]) => id === databaseId)?.[0] || "";
+
+// Use the actual database title from API, fallback to formatted key name
+const databaseName = computed(() => database.value?.title || databaseKey.replace(/_/g, " ") || "Unknown");
 
 // Form state
 const sourceType = ref<"IMDB" | "OTHER">("IMDB");
@@ -35,7 +45,7 @@ const otherUrl = ref("");
     <!-- Page Header -->
     <div class="page-header">
       <h1 class="page-title">
-        {{ databaseName.replace(/_/g, " ") }}
+        {{ databaseName }}
       </h1>
     </div>
 
