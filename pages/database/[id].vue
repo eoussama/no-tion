@@ -121,6 +121,14 @@ function clearSelection() {
   showResults.value = false;
 }
 
+// Clear inputs when switching tabs
+watch(sourceType, () => {
+  // Clear IMDB inputs
+  clearSelection();
+  // Clear OTHER input
+  otherUrl.value = "";
+});
+
 // Handle click outside
 function handleClickOutside(event: MouseEvent) {
   if (autocompleteRef.value && !autocompleteRef.value.contains(event.target as Node)) {
@@ -403,7 +411,8 @@ onUnmounted(() => {
 
 /* Form */
 .form-container {
-  max-width: 600px;
+  max-width: 900px;
+  width: 100%;
 }
 
 .form-section {
