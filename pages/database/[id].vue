@@ -681,7 +681,7 @@ onUnmounted(() => {
   font-weight: 500;
   cursor: pointer;
   transition: background 20ms ease-in;
-  align-self: flex-start;
+  align-self: flex-end;
 }
 
 .submit-button:hover:not(:disabled) {
