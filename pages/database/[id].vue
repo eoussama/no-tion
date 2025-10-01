@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TNotionWorkspaceData } from "~/core";
-import { ChevronRight, Home } from "lucide-vue-next";
+import { ChevronRight, Home, Loader2, X } from "lucide-vue-next";
 import { DATABASES } from "~/core";
 
 
@@ -30,19 +30,24 @@ const imdbSearchResults = ref<Array<{
   primaryTitle: string;
   type: string;
   startYear?: number;
+  primaryImage?: { url: string };
 }>>([]);
 const isSearching = ref(false);
-const selectedImdbTitle = ref<string>("");
+const selectedImdbTitle = ref<{ id: string; primaryTitle: string; type: string; startYear?: number; primaryImage?: { url: string } } | null>(null);
+const showResults = ref(false);
+const autocompleteRef = ref<HTMLElement | null>(null);
 
 // Debounced search function
 async function searchImdb() {
   if (imdbSearchQuery.value.length < 2) {
     imdbSearchResults.value = [];
+    showResults.value = false;
 
     return;
   }
 
   isSearching.value = true;
+  showResults.value = true;
 
   try {
     const response = await $fetch<{ titles: Array<{
@@ -50,6 +55,7 @@ async function searchImdb() {
       primaryTitle: string;
       type: string;
       startYear?: number;
+      primaryImage?: { url: string };
     }>; }>("/api/imdb/search", {
       params: { q: imdbSearchQuery.value },
     });
@@ -69,16 +75,60 @@ async function searchImdb() {
 let searchTimeout: ReturnType<typeof setTimeout>;
 
 watch(imdbSearchQuery, () => {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(searchImdb, 300);
+  // Only search if we don't have a selected title or if query doesn't match
+  if (!selectedImdbTitle.value || imdbSearchQuery.value !== getDisplayTitle(selectedImdbTitle.value)) {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(searchImdb, 300);
+  }
 });
 
-function selectTitle(title: { id: string; primaryTitle: string; type: string; startYear?: number }) {
-  selectedImdbTitle.value = `${title.primaryTitle} (${title.startYear || "N/A"})`;
+function getDisplayTitle(title: { primaryTitle: string; type: string; startYear?: number }) {
+  return `${title.primaryTitle} (${title.startYear || "N/A"})`;
+}
+
+function selectTitle(title: { id: string; primaryTitle: string; type: string; startYear?: number; primaryImage?: { url: string } }) {
+  selectedImdbTitle.value = title;
+  imdbSearchQuery.value = getDisplayTitle(title);
   imdbUrl.value = `https://www.imdb.com/title/${title.id}/`;
-  imdbSearchQuery.value = "";
+  showResults.value = false;
   imdbSearchResults.value = [];
 }
+
+function dismissResults() {
+  showResults.value = false;
+}
+
+function clearSelection() {
+  selectedImdbTitle.value = null;
+  imdbSearchQuery.value = "";
+  imdbUrl.value = "";
+  imdbSearchResults.value = [];
+  showResults.value = false;
+}
+
+// Handle click outside
+function handleClickOutside(event: MouseEvent) {
+  if (autocompleteRef.value && !autocompleteRef.value.contains(event.target as Node)) {
+    dismissResults();
+  }
+}
+
+// Handle ESC key
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === "Escape") {
+    dismissResults();
+  }
+}
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+  document.addEventListener("keydown", handleKeydown);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside);
+  document.removeEventListener("keydown", handleKeydown);
+});
 </script>
 
 <template>
@@ -142,18 +192,28 @@ function selectTitle(title: { id: string; primaryTitle: string; type: string; st
         <!-- IMDB URL Input -->
         <div v-if="sourceType === 'IMDB'" class="form-section">
           <label class="form-label">Search IMDB Title</label>
-          <div class="autocomplete-container">
-            <input
-              v-model="imdbSearchQuery"
-              type="text"
-              placeholder="Start typing a movie or TV show name..."
-              class="form-input"
-              @focus="() => {}"
-            >
-            <div v-if="isSearching" class="autocomplete-loading">
-              Searching...
+          <div ref="autocompleteRef" class="autocomplete-container">
+            <div class="input-wrapper">
+              <input
+                v-model="imdbSearchQuery"
+                type="text"
+                placeholder="Start typing a movie or TV show name..."
+                class="form-input"
+                @focus="() => { if (imdbSearchResults.length > 0) showResults = true; }"
+              >
+              <button
+                v-if="selectedImdbTitle"
+                type="button"
+                class="clear-button"
+                @click="clearSelection"
+              >
+                <X :size="16" />
+              </button>
             </div>
-            <div v-if="imdbSearchResults.length > 0" class="autocomplete-results">
+            <div v-if="isSearching && showResults" class="autocomplete-loading">
+              <Loader2 :size="16" class="spinner-icon" />
+            </div>
+            <div v-if="imdbSearchResults.length > 0 && showResults" class="autocomplete-results">
               <button
                 v-for="title in imdbSearchResults"
                 :key="title.id"
@@ -161,22 +221,21 @@ function selectTitle(title: { id: string; primaryTitle: string; type: string; st
                 class="autocomplete-item"
                 @click="selectTitle(title)"
               >
-                <div class="autocomplete-item-title">
-                  {{ title.primaryTitle }}
+                <div v-if="title.primaryImage?.url" class="autocomplete-item-poster">
+                  <img :src="title.primaryImage.url" :alt="title.primaryTitle">
                 </div>
-                <div class="autocomplete-item-meta">
-                  {{ title.type }} • {{ title.startYear || 'N/A' }}
+                <div v-else class="autocomplete-item-poster-placeholder">
+                  <span>No Image</span>
+                </div>
+                <div class="autocomplete-item-content">
+                  <div class="autocomplete-item-title">
+                    {{ title.primaryTitle }}
+                  </div>
+                  <div class="autocomplete-item-meta">
+                    {{ title.type }} • {{ title.startYear || 'N/A' }}
+                  </div>
                 </div>
               </button>
-            </div>
-          </div>
-
-          <div v-if="selectedImdbTitle" class="selected-title">
-            <div class="selected-title-label">
-              Selected:
-            </div>
-            <div class="selected-title-value">
-              {{ selectedImdbTitle }}
             </div>
           </div>
         </div>
@@ -435,15 +494,85 @@ function selectTitle(title: { id: string; primaryTitle: string; type: string; st
   position: relative;
 }
 
-.autocomplete-loading {
-  padding: 12px;
-  font-size: 14px;
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .form-input {
+  padding-right: 40px;
+}
+
+.clear-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: rgba(55, 53, 47, 0.45);
+  transition: all 20ms ease-in;
+}
+
+.clear-button:hover {
+  background: rgba(55, 53, 47, 0.08);
   color: rgba(55, 53, 47, 0.65);
-  text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .clear-button {
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .clear-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.55);
+  }
+}
+
+.autocomplete-loading {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 3px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.autocomplete-loading .spinner-icon {
+  color: rgba(55, 53, 47, 0.65);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   .autocomplete-loading {
+    background: rgba(32, 32, 32, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  .autocomplete-loading .spinner-icon {
     color: rgba(255, 255, 255, 0.45);
   }
 }
@@ -472,8 +601,9 @@ function selectTitle(title: { id: string; primaryTitle: string; type: string; st
 .autocomplete-item {
   width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
   padding: 10px 12px;
   border: none;
   background: transparent;
@@ -502,6 +632,62 @@ function selectTitle(title: { id: string; primaryTitle: string; type: string; st
   }
 }
 
+.autocomplete-item-poster {
+  width: 50px;
+  height: 75px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  overflow: hidden;
+  background: rgba(55, 53, 47, 0.08);
+}
+
+.autocomplete-item-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (prefers-color-scheme: dark) {
+  .autocomplete-item-poster {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.autocomplete-item-poster-placeholder {
+  width: 50px;
+  height: 75px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  background: rgba(55, 53, 47, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.autocomplete-item-poster-placeholder span {
+  font-size: 10px;
+  color: rgba(55, 53, 47, 0.45);
+  text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .autocomplete-item-poster-placeholder {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .autocomplete-item-poster-placeholder span {
+    color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+.autocomplete-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .autocomplete-item-title {
   font-size: 14px;
   font-weight: 500;
@@ -518,40 +704,6 @@ function selectTitle(title: { id: string; primaryTitle: string; type: string; st
   .autocomplete-item-meta {
     color: rgba(255, 255, 255, 0.45);
   }
-}
-
-/* Selected Title */
-.selected-title {
-  padding: 12px;
-  background: rgba(35, 131, 226, 0.08);
-  border-radius: 3px;
-  border: 1px solid rgba(35, 131, 226, 0.2);
-}
-
-@media (prefers-color-scheme: dark) {
-  .selected-title {
-    background: rgba(35, 131, 226, 0.12);
-    border-color: rgba(35, 131, 226, 0.3);
-  }
-}
-
-.selected-title-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(55, 53, 47, 0.65);
-  margin-bottom: 4px;
-}
-
-@media (prefers-color-scheme: dark) {
-  .selected-title-label {
-    color: rgba(255, 255, 255, 0.45);
-  }
-}
-
-.selected-title-value {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text);
 }
 
 /* Responsive */
