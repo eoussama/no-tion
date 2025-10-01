@@ -15,6 +15,19 @@ Install dependencies:
 pnpm install
 ```
 
+Create a `.env` file in the root directory with your Notion API key:
+
+```sh
+VITE_NOTION_API_KEY=your_notion_integration_token_here
+```
+
+To get your Notion API key:
+
+1. Go to [https://www.notion.so/my-integrations](https://www.notion.so/my-integrations)
+2. Create a new integration
+3. Copy the "Internal Integration Token"
+4. Share your databases with the integration in Notion
+
 ## Development
 
 Start the development server with hot-reload:
