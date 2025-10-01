@@ -255,6 +255,51 @@ onUnmounted(() => {
           </div>
         </div>
 
+        <!-- Selected Movie Details -->
+        <div v-if="sourceType === 'IMDB' && selectedImdbTitle" class="form-section">
+          <div class="movie-details">
+            <div class="movie-details-form">
+              <div class="form-field">
+                <label class="form-label">Title</label>
+                <input
+                  v-model="selectedImdbTitle.primaryTitle"
+                  type="text"
+                  class="form-input"
+                >
+              </div>
+
+              <div class="form-field">
+                <label class="form-label">Type</label>
+                <input
+                  :value="formatTitleType(selectedImdbTitle.type)"
+                  type="text"
+                  class="form-input form-input-readonly"
+                  readonly
+                >
+              </div>
+
+              <div class="form-field">
+                <label class="form-label">IMDB URL</label>
+                <input
+                  :value="imdbUrl"
+                  type="text"
+                  class="form-input form-input-readonly"
+                  readonly
+                >
+              </div>
+            </div>
+
+            <div class="movie-details-poster">
+              <div v-if="selectedImdbTitle.primaryImage?.url" class="movie-poster">
+                <img :src="selectedImdbTitle.primaryImage.url" :alt="selectedImdbTitle.primaryTitle">
+              </div>
+              <div v-else class="movie-poster-placeholder">
+                <span>No Poster</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Other URL Input -->
         <div v-if="sourceType === 'OTHER'" class="form-section">
           <label class="form-label">URL</label>
@@ -718,6 +763,97 @@ onUnmounted(() => {
 @media (prefers-color-scheme: dark) {
   .autocomplete-item-meta {
     color: rgba(255, 255, 255, 0.45);
+  }
+}
+
+/* Movie Details */
+.movie-details {
+  display: flex;
+  gap: 24px;
+  padding: 16px;
+  background: white;
+  border: 1px solid rgba(55, 53, 47, 0.16);
+  border-radius: 3px;
+  transition: background 20ms ease-in;
+}
+
+@media (prefers-color-scheme: dark) {
+  .movie-details {
+    background: rgba(255, 255, 255, 0.055);
+    border-color: rgba(255, 255, 255, 0.094);
+  }
+}
+
+.movie-details-poster {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 250px;
+}
+
+.movie-poster {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.movie-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+.movie-poster-placeholder {
+  width: 100%;
+  aspect-ratio: 2/3;
+  border-radius: 3px;
+  background: rgba(55, 53, 47, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: rgba(55, 53, 47, 0.45);
+  text-align: center;
+  padding: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .movie-poster-placeholder {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+.movie-details-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.form-input-readonly {
+  background: rgba(55, 53, 47, 0.04);
+  cursor: default;
+  color: rgba(55, 53, 47, 0.75);
+}
+
+.form-input-readonly:focus {
+  box-shadow: none;
+  border-color: rgba(55, 53, 47, 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+  .form-input-readonly {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  .form-input-readonly:focus {
+    border-color: rgba(255, 255, 255, 0.094);
   }
 }
 
