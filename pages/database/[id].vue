@@ -45,7 +45,10 @@ const otherUrl = ref("");
         <div class="form-section">
           <label class="form-label">Source Type</label>
           <div class="radio-group">
-            <label class="radio-option">
+            <label
+              class="radio-option"
+              :class="{ 'radio-option-active': sourceType === 'IMDB' }"
+            >
               <input
                 v-model="sourceType"
                 type="radio"
@@ -55,7 +58,10 @@ const otherUrl = ref("");
               >
               <span class="radio-label">IMDB</span>
             </label>
-            <label class="radio-option">
+            <label
+              class="radio-option"
+              :class="{ 'radio-option-active': sourceType === 'OTHER' }"
+            >
               <input
                 v-model="sourceType"
                 type="radio"
@@ -194,13 +200,29 @@ const otherUrl = ref("");
 .form-label {
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-text);
+  color: rgba(55, 53, 47, 0.65);
+  margin-bottom: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .form-label {
+    color: rgba(255, 255, 255, 0.45);
+  }
 }
 
 .radio-group {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: 0;
+  background: rgba(55, 53, 47, 0.08);
+  border-radius: 3px;
+  padding: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .radio-group {
+    background: rgba(255, 255, 255, 0.08);
+  }
 }
 
 .radio-option {
@@ -208,62 +230,84 @@ const otherUrl = ref("");
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 3px;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 2px;
   cursor: pointer;
-  transition: background 20ms ease-in;
-  border: 1px solid rgba(55, 53, 47, 0.16);
+  transition: all 20ms ease-in;
+  border: none;
+  background: transparent;
 }
 
-.radio-option:hover {
-  background: rgba(55, 53, 47, 0.03);
+.radio-option:hover:not(.radio-option-active) {
+  background: rgba(55, 53, 47, 0.06);
+}
+
+.radio-option-active {
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
-  .radio-option {
-    border-color: rgba(255, 255, 255, 0.16);
+  .radio-option:hover:not(.radio-option-active) {
+    background: rgba(255, 255, 255, 0.06);
   }
 
-  .radio-option:hover {
-    background: rgba(255, 255, 255, 0.03);
+  .radio-option-active {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
 }
 
 .radio-input {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  accent-color: var(--color-text);
+  display: none;
 }
 
 .radio-label {
   font-size: 14px;
-  color: var(--color-text);
+  font-weight: 500;
+  color: rgba(55, 53, 47, 0.65);
   cursor: pointer;
   user-select: none;
+  transition: color 20ms ease-in;
+}
+
+.radio-option-active .radio-label {
+  color: var(--color-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  .radio-label {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .radio-option-active .radio-label {
+    color: rgba(255, 255, 255, 0.9);
+  }
 }
 
 .form-input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 8px 10px;
   font-size: 14px;
+  line-height: 1.5;
   font-family: inherit;
   color: var(--color-text);
-  background: rgba(55, 53, 47, 0.06);
-  border: 1px solid rgba(55, 53, 47, 0.16);
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: 3px;
-  transition: background 20ms ease-in, border-color 20ms ease-in;
+  transition: all 20ms ease-in;
   outline: none;
+  box-shadow: inset 0 0 0 1px rgba(55, 53, 47, 0.16);
 }
 
 .form-input:hover {
-  background: rgba(55, 53, 47, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(55, 53, 47, 0.24);
 }
 
 .form-input:focus {
-  background: white;
-  border-color: rgba(35, 131, 226, 0.57);
+  background: rgba(35, 131, 226, 0.04);
+  box-shadow: inset 0 0 0 2px rgba(35, 131, 226, 0.5);
 }
 
 .form-input::placeholder {
@@ -272,17 +316,16 @@ const otherUrl = ref("");
 
 @media (prefers-color-scheme: dark) {
   .form-input {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
   }
 
   .form-input:hover {
-    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
   }
 
   .form-input:focus {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(35, 131, 226, 0.57);
+    background: rgba(35, 131, 226, 0.08);
+    box-shadow: inset 0 0 0 2px rgba(35, 131, 226, 0.5);
   }
 
   .form-input::placeholder {
