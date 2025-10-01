@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterView } from "vue-router";
 </script>
 
 <template>
   <header>
     <div class="header-content">
-      <img alt="no-tion logo" class="logo" src="/logo.png" width="48" height="48" />
+      <img alt="no-tion logo" class="logo" src="/logo.png" width="48" height="48">
       <h1>no-tion</h1>
     </div>
   </header>
