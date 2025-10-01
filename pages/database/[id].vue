@@ -86,6 +86,21 @@ function getDisplayTitle(title: { primaryTitle: string; type: string; startYear?
   return `${title.primaryTitle} (${title.startYear || "N/A"})`;
 }
 
+function formatTitleType(type: string): string {
+  const typeMap: Record<string, string> = {
+    movie: "Movie",
+    tvSeries: "TV Series",
+    tvMiniSeries: "TV Mini-Series",
+    tvSpecial: "TV Special",
+    tvMovie: "TV Movie",
+    short: "Short",
+    video: "Video",
+    videoGame: "Video Game",
+  };
+
+  return typeMap[type] || type.charAt(0).toUpperCase() + type.slice(1);
+}
+
 function selectTitle(title: { id: string; primaryTitle: string; type: string; startYear?: number; primaryImage?: { url: string } }) {
   selectedImdbTitle.value = title;
   imdbSearchQuery.value = getDisplayTitle(title);
@@ -232,7 +247,7 @@ onUnmounted(() => {
                     {{ title.primaryTitle }}
                   </div>
                   <div class="autocomplete-item-meta">
-                    {{ title.type }} • {{ title.startYear || 'N/A' }}
+                    {{ formatTitleType(title.type) }} • {{ title.startYear || 'N/A' }}
                   </div>
                 </div>
               </button>
