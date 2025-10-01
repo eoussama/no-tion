@@ -1,31 +1,32 @@
+import type { TNullable } from "@eoussama/core";
 import { Client } from "@notionhq/client";
 
 
 
-export interface NotionDatabase {
+export type TNotionDatabase = {
   id: string;
   title: string;
   icon?: string;
   lastEditedTime: string;
-}
+};
 
-export interface NotionUser {
+export type TNotionUser = {
   name: string;
   avatarUrl?: string;
-}
+};
 
-export interface NotionWorkspace {
+export type TNotionWorkspace = {
   name: string;
   icon?: string;
-}
+};
 
-export interface NotionWorkspaceData {
-  user: NotionUser | null;
-  workspace: NotionWorkspace | null;
-  databases: NotionDatabase[];
-}
+export type TNotionWorkspaceData = {
+  user: TNullable<TNotionUser>;
+  workspace: TNullable<TNotionWorkspace>;
+  databases: TNotionDatabase[];
+};
 
-export default defineEventHandler(async (event): Promise<NotionWorkspaceData> => {
+export default defineEventHandler(async (event): Promise<TNotionWorkspaceData> => {
   const config = useRuntimeConfig(event);
   const apiKey = config.notionApiKey;
 
@@ -41,8 +42,8 @@ export default defineEventHandler(async (event): Promise<NotionWorkspaceData> =>
 
     // Fetch user info
     const me = await notion.users.me({});
-    let user: NotionUser | null = null;
-    let workspace: NotionWorkspace | null = null;
+    let user: TNullable<TNotionUser> = null;
+    let workspace: TNullable<TNotionWorkspace> = null;
 
     if (me.type === "person" && me.person.email) {
       user = {
@@ -76,7 +77,7 @@ export default defineEventHandler(async (event): Promise<NotionWorkspaceData> =>
       sort: { direction: "descending", timestamp: "last_edited_time" },
     }) as { results: Array<{ object: string; id: string; [key: string]: unknown }> };
 
-    const databases: NotionDatabase[] = response.results
+    const databases: TNotionDatabase[] = response.results
       .filter(result => result.object === "database")
       .map((db) => {
         return {

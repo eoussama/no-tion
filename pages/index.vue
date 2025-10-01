@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { TNullable } from "@eoussama/core";
 import { AlertCircle, ChevronRight, Database, Loader2 } from "lucide-vue-next";
 
 
@@ -7,7 +8,7 @@ const { data, error: fetchError, pending } = await useFetch("/api/notion/workspa
 
 const databases = computed(() => data.value?.databases || []);
 const loading = computed(() => pending.value);
-const error = computed(() => fetchError.value?.statusMessage || null);
+const error = computed(() => (fetchError.value?.statusMessage || null) as TNullable<string>);
 
 async function refetch() {
   await refreshNuxtData();
