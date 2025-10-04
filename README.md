@@ -28,10 +28,11 @@ Install dependencies:
 pnpm install
 ```
 
-Create a `.env` file in the root directory with your Notion API key:
+Create a `.env` file in the root directory with your Notion API key and password:
 
 ```sh
 NUXT_NOTION_API_KEY=your_notion_integration_token_here
+NUXT_PASSWORD=your_secure_password_here
 ```
 
 To get your Notion API key:
