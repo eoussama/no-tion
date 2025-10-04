@@ -1,5 +1,5 @@
 import type { VueQueryPluginOptions } from "@tanstack/vue-query";
-import { VueQueryPlugin, QueryClient } from "@tanstack/vue-query";
+import { QueryClient, VueQueryPlugin } from "@tanstack/vue-query";
 
 
 
