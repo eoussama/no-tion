@@ -5,7 +5,9 @@ import { Building2, XCircle } from "lucide-vue-next";
 
 
 
-const { data, error: fetchError, pending } = await useFetch<TNotionWorkspaceData>("/api/notion/workspace");
+const { data, error: fetchError, pending } = useFetch<TNotionWorkspaceData>("/api/notion/workspace", {
+  lazy: true,
+});
 
 const workspace = computed(() => (data.value?.workspace || null) as TNullable<typeof data.value.workspace>);
 const user = computed(() => (data.value?.user || null) as TNullable<typeof data.value.user>);
@@ -18,10 +20,10 @@ const isConnected = computed(() => !loading.value && !error.value && (user.value
   <div class="app-container">
     <header class="topbar">
       <div class="topbar-content">
-        <div class="topbar-left">
+        <NuxtLink to="/" class="topbar-left">
           <img alt="no-tion logo" class="logo" src="/logo.png">
           <span class="app-title">no-tion</span>
-        </div>
+        </NuxtLink>
 
         <div class="topbar-right">
           <div v-if="loading" class="header-status">
@@ -83,6 +85,22 @@ const isConnected = computed(() => !loading.value && !error.value && (user.value
   display: flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  border-radius: 4px;
+  transition: background 20ms ease-in;
+}
+
+.topbar-left:hover {
+  background: rgba(55, 53, 47, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .topbar-left:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
 }
 
 .logo {
