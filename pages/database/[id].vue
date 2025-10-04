@@ -986,6 +986,12 @@ onUnmounted(() => {
   transition: background 20ms ease-in;
 }
 
+@media (max-width: 768px) {
+  .movie-details {
+    flex-direction: column;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .movie-details {
     background: rgba(255, 255, 255, 0.055);
@@ -997,6 +1003,17 @@ onUnmounted(() => {
   flex-shrink: 0;
   width: 100%;
   max-width: 250px;
+}
+
+@media (max-width: 768px) {
+  .movie-details-poster {
+    max-width: 100%;
+    order: 2;
+  }
+
+  .movie-details-form {
+    order: 1;
+  }
 }
 
 .movie-poster {
