@@ -14,9 +14,11 @@ export default defineEventHandler(async (event) => {
   // Compare with the password from environment
   if (password === config.password) {
     // Set a session cookie
+    const isDev = import.meta.dev;
+
     setCookie(event, "auth-token", "authenticated", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: !isDev,
       maxAge: 60 * 60 * 24 * 7, // 7 days
       sameSite: "strict",
     });
