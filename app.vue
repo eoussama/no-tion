@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import type { TNullable } from "@eoussama/core";
 import type { TNotionWorkspaceData } from "~/core";
-import { Building2, XCircle } from "lucide-vue-next";
+import { Building2, LogOut, XCircle } from "lucide-vue-next";
 
 
+
+const route = useRoute();
+const isLoginPage = computed(() => route.path === "/login");
 
 const { data, error: fetchError, pending } = useFetch<TNotionWorkspaceData>("/api/notion/workspace", {
   lazy: true,
@@ -14,11 +17,16 @@ const user = computed(() => (data.value?.user || null) as TNullable<typeof data.
 const loading = computed(() => pending.value);
 const error = computed(() => (fetchError.value?.statusMessage || null) as TNullable<string>);
 const isConnected = computed(() => !loading.value && !error.value && (user.value || workspace.value));
+
+async function handleLogout() {
+  await $fetch("/api/auth/logout", { method: "POST" });
+  await navigateTo("/login");
+}
 </script>
 
 <template>
   <div class="app-container">
-    <header class="topbar">
+    <header v-if="!isLoginPage" class="topbar">
       <div class="topbar-content">
         <NuxtLink to="/" class="topbar-left">
           <img alt="no-tion logo" class="logo" src="/logo.png">
@@ -41,6 +49,10 @@ const isConnected = computed(() => !loading.value && !error.value && (user.value
             <span class="header-status-text">{{ workspace?.name || 'Workspace' }}</span>
             <span class="header-status-dot" />
           </div>
+
+          <button class="logout-button" title="Logout" @click="handleLogout">
+            <LogOut :size="16" />
+          </button>
         </div>
       </div>
     </header>
@@ -118,7 +130,36 @@ const isConnected = computed(() => !loading.value && !error.value && (user.value
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: none;
+  background: transparent;
+  color: rgba(55, 53, 47, 0.65);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 20ms ease-in;
+}
+
+.logout-button:hover {
+  background: rgba(55, 53, 47, 0.08);
+  color: var(--color-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  .logout-button {
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .logout-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+  }
 }
 
 .header-status {
