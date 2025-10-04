@@ -7,6 +7,13 @@ definePageMeta({
   layout: false,
 });
 
+// Check if already authenticated and redirect to home
+const { data: authStatus } = await useFetch("/api/auth/status");
+
+if (authStatus.value?.authenticated) {
+  await navigateTo("/");
+}
+
 const password = ref("");
 const isSubmitting = ref(false);
 const error = ref("");
