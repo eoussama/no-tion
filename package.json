@@ -19,6 +19,7 @@
   "dependencies": {
     "@eoussama/core": "^0.0.4",
     "@notionhq/client": "^5.1.0",
+    "@tanstack/vue-query": "^5.90.2",
     "lucide-vue-next": "^0.544.0",
     "nuxt": "^3.15.4",
     "vue": "^3.5.22"
