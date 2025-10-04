@@ -10,6 +10,7 @@ Built with Nuxt 3 with server-side API integration for secure Notion API key han
 <p align="center">
     <a href="https://github.com/eoussama/no-tion/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/eoussama/no-tion" /></a>
     <a href="https://github.com/eoussama/no-tion/actions/workflows/publish.yml" target="_blank"><img src="https://github.com/eoussama/core/actions/workflows/publish.yml/badge.svg" /></a>
+    <img src="https://img.shields.io/github/v/release/eoussama/no-tion" />
     <img src="https://img.shields.io/github/languages/code-size/eoussama/core" />
 </p>
 
