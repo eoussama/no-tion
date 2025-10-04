@@ -8,8 +8,10 @@ import { DATABASES } from "~/core";
 const route = useRoute();
 const databaseId = route.params.id as string;
 
-// Fetch database info from API
-const { data } = await useFetch<TNotionWorkspaceData>("/api/notion/workspace");
+// Fetch database info from API (non-blocking)
+const { data } = useFetch<TNotionWorkspaceData>("/api/notion/workspace", {
+  lazy: true,
+});
 
 // Find the database from the fetched data
 const database = computed(() => data.value?.databases.find(db => db.id === databaseId));

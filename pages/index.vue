@@ -5,7 +5,9 @@ import { AlertCircle, ChevronRight, Database, Loader2 } from "lucide-vue-next";
 
 
 
-const { data, error: fetchError, pending } = await useFetch<TNotionWorkspaceData>("/api/notion/workspace");
+const { data, error: fetchError, pending } = useFetch<TNotionWorkspaceData>("/api/notion/workspace", {
+  lazy: true,
+});
 
 const databases = computed(() => data.value?.databases || []);
 const loading = computed(() => pending.value);
