@@ -1,21 +1,14 @@
 <script setup lang="ts">
 import type { TNullable } from "@eoussama/core";
-import type { TNotionWorkspaceData } from "~/core";
-import { AlertCircle, ChevronRight, Database, Loader2 } from "lucide-vue-next";
+import { AlertCircle, ChevronRight, Database } from "lucide-vue-next";
 
 
 
-const { data, error: fetchError, pending } = useFetch<TNotionWorkspaceData>("/api/notion/workspace", {
-  lazy: true,
-});
+const { data, error: fetchError, isPending, refetch } = useWorkspaceQuery();
 
 const databases = computed(() => data.value?.databases || []);
-const loading = computed(() => pending.value);
-const error = computed(() => (fetchError.value?.statusMessage || null) as TNullable<string>);
-
-async function refetch() {
-  await refreshNuxtData();
-}
+const loading = computed(() => isPending.value);
+const error = computed(() => (fetchError.value?.message || null) as TNullable<string>);
 </script>
 
 <template>
@@ -60,10 +53,7 @@ async function refetch() {
           Databases
         </h2>
 
-        <div v-if="loading" class="loading-state">
-          <Loader2 :size="20" class="spinner-icon" />
-          <span>Loading databases...</span>
-        </div>
+        <DatabaseListSkeleton v-if="loading" :count="3" />
 
         <div v-else-if="databases.length === 0" class="empty-state">
           <div class="empty-icon">

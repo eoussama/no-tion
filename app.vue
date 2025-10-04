@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { TNullable } from "@eoussama/core";
-import type { TNotionWorkspaceData } from "~/core";
 import { Building2, LogOut, XCircle } from "lucide-vue-next";
 
 
@@ -8,14 +7,24 @@ import { Building2, LogOut, XCircle } from "lucide-vue-next";
 const route = useRoute();
 const isLoginPage = computed(() => route.path === "/login");
 
-const { data, error: fetchError, pending } = useFetch<TNotionWorkspaceData>("/api/notion/workspace", {
-  lazy: true,
-});
+const { data, error: fetchError, isPending } = useWorkspaceQuery();
 
-const workspace = computed(() => (data.value?.workspace || null) as TNullable<typeof data.value.workspace>);
-const user = computed(() => (data.value?.user || null) as TNullable<typeof data.value.user>);
-const loading = computed(() => pending.value);
-const error = computed(() => (fetchError.value?.statusMessage || null) as TNullable<string>);
+const workspace = computed(() => {
+  if (!data.value?.workspace) {
+    return null;
+  }
+
+  return data.value.workspace as TNullable<typeof data.value.workspace>;
+});
+const user = computed(() => {
+  if (!data.value?.user) {
+    return null;
+  }
+
+  return data.value.user as TNullable<typeof data.value.user>;
+});
+const loading = computed(() => isPending.value);
+const error = computed(() => (fetchError.value?.message || null) as TNullable<string>);
 const isConnected = computed(() => !loading.value && !error.value && (user.value || workspace.value));
 
 async function handleLogout() {

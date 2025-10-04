@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { TNotionWorkspaceData } from "~/core";
 import { ChevronRight, Home, Loader2, X } from "lucide-vue-next";
 import { DATABASES } from "~/core";
 
@@ -8,10 +7,8 @@ import { DATABASES } from "~/core";
 const route = useRoute();
 const databaseId = route.params.id as string;
 
-// Fetch database info from API (non-blocking)
-const { data } = useFetch<TNotionWorkspaceData>("/api/notion/workspace", {
-  lazy: true,
-});
+// Fetch database info from API using TanStack Query
+const { data } = useWorkspaceQuery();
 
 // Find the database from the fetched data
 const database = computed(() => data.value?.databases.find(db => db.id === databaseId));
@@ -264,7 +261,8 @@ onUnmounted(() => {
 
     <!-- Page Content -->
     <div class="page-body">
-      <div class="form-container">
+      <DatabaseFormSkeleton v-if="!database" />
+      <div v-else class="form-container">
         <div class="form-section">
           <label class="form-label">Source Type</label>
           <div class="radio-group">
