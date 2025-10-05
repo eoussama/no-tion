@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TNullable } from "@eoussama/core";
 import { Building2, Github, LogOut, XCircle } from "lucide-vue-next";
+import packageJson from "./package.json";
 
 
 
@@ -26,6 +27,8 @@ const user = computed(() => {
 const loading = computed(() => isPending.value);
 const error = computed(() => (fetchError.value?.message || null) as TNullable<string>);
 const isConnected = computed(() => !loading.value && !error.value && (user.value || workspace.value));
+
+const appVersion = packageJson.version;
 
 async function handleLogout() {
   await $fetch("/api/auth/logout", { method: "POST" });
@@ -64,9 +67,10 @@ async function handleLogout() {
             target="_blank"
             rel="noopener noreferrer"
             class="github-button"
-            title="View on GitHub"
+            :title="`View on GitHub - v${appVersion}`"
           >
             <Github :size="16" />
+            <span class="version-badge">v{{ appVersion }}</span>
           </a>
 
           <button class="logout-button" title="Logout" @click="handleLogout">
@@ -185,7 +189,8 @@ async function handleLogout() {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px;
+  gap: 6px;
+  padding: 6px 8px;
   border: none;
   background: transparent;
   color: rgba(55, 53, 47, 0.65);
@@ -200,6 +205,21 @@ async function handleLogout() {
   color: var(--color-text);
 }
 
+.version-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(55, 53, 47, 0.08);
+  color: rgba(55, 53, 47, 0.65);
+  transition: all 20ms ease-in;
+}
+
+.github-button:hover .version-badge {
+  background: rgba(55, 53, 47, 0.12);
+  color: var(--color-text);
+}
+
 @media (prefers-color-scheme: dark) {
   .github-button {
     color: rgba(255, 255, 255, 0.45);
@@ -207,6 +227,16 @@ async function handleLogout() {
 
   .github-button:hover {
     background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .version-badge {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .github-button:hover .version-badge {
+    background: rgba(255, 255, 255, 0.12);
     color: rgba(255, 255, 255, 0.9);
   }
 }
