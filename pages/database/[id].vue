@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ChevronRight, ExternalLink, Home, Loader2, X } from "lucide-vue-next";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
+import { CheckCircle, ChevronRight, ExternalLink, Home, Loader2, X } from "lucide-vue-next";
 import { DATABASES } from "~/core";
 
 
 
 const route = useRoute();
 const databaseId = route.params.id as string;
+const queryClient = useQueryClient();
 
 // Fetch database info from API using TanStack Query
 const { data } = useWorkspaceQuery();
@@ -50,8 +52,39 @@ const showResults = ref(false);
 const autocompleteRef = ref<HTMLElement | null>(null);
 const isSubmitting = ref(false);
 
+// Fetch existing pages using TanStack Query
+const { data: existingPagesData } = useQuery({
+  queryKey: ["database-pages", databaseId],
+  queryFn: async () => {
+    const response = await $fetch<{ pages: Array<{ id: string; infoUrl: string | null }> }>(`/api/notion/database/${databaseId}/pages`);
+    return response.pages;
+  },
+  staleTime: 5 * 60 * 1000, // 5 minutes
+});
+
+// Compute existing IMDB URLs from query data
+const existingImdbUrls = computed(() => {
+  if (!existingPagesData.value) {
+    return new Set<string>();
+  }
+
+  return new Set(
+    existingPagesData.value
+      .map(p => p.infoUrl)
+      .filter((url): url is string => url !== null),
+  );
+});
+
 // Toast state
 const toast = ref<{ message: string; type: "success" | "error" } | null>(null);
+
+// Check if a movie already exists in the database
+function isMovieInDatabase(imdbId: string): boolean {
+  const imdbUrl = `https://www.imdb.com/title/${imdbId}/`;
+  const exists = existingImdbUrls.value.has(imdbUrl);
+
+  return exists;
+}
 
 // Computed validation for form
 const isFormValid = computed(() => {
@@ -89,7 +122,6 @@ async function searchImdb() {
     });
 
     imdbSearchResults.value = response.titles || [];
-    console.log("IMDB API Response:", response.titles?.[0]);
   }
   catch (error) {
     console.error("Search error:", error);
@@ -122,7 +154,7 @@ function formatTitleType(type: string): string {
     tvMiniSeries: "TV Mini-Series",
     tvSpecial: "TV Special",
     tvMovie: "TV Movie",
-    tvShort: "TV Short",
+    tvShort: "TV Movie",
     short: "Short",
     video: "Video",
     videoGame: "Video Game",
@@ -203,6 +235,9 @@ async function handleSubmit() {
         ...payload,
       },
     });
+
+    // Invalidate the pages query to refetch existing pages
+    await queryClient.invalidateQueries({ queryKey: ["database-pages", databaseId] });
 
     // Clear form after successful submission
     if (sourceType.value === "IMDB") {
@@ -354,6 +389,7 @@ onUnmounted(() => {
                 :key="title.id"
                 type="button"
                 class="autocomplete-item"
+                :class="{ 'autocomplete-item-exists': isMovieInDatabase(title.id) }"
                 @click="selectTitle(title)"
               >
                 <div v-if="title.primaryImage?.url" class="autocomplete-item-poster">
@@ -372,6 +408,9 @@ onUnmounted(() => {
                     <span v-if="title.runtimeSeconds"> • {{ Math.round(title.runtimeSeconds / 60) }} min</span>
                     <span v-if="title.rating?.aggregateRating"> • {{ title.rating.aggregateRating.toFixed(1) }}</span>
                   </div>
+                </div>
+                <div v-if="isMovieInDatabase(title.id)" class="exists-icon" title="Already in database">
+                  <CheckCircle :size="18" />
                 </div>
               </button>
             </div>
@@ -1104,6 +1143,29 @@ onUnmounted(() => {
   font-weight: 500;
   color: var(--color-text);
   margin-bottom: 2px;
+}
+
+.exists-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(34, 197, 94);
+  margin-left: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .exists-icon {
+    color: rgb(74, 222, 128);
+  }
+}
+
+.autocomplete-item-exists {
+  opacity: 0.6;
+}
+
+.autocomplete-item-exists:hover {
+  opacity: 0.8;
 }
 
 .autocomplete-item-meta {
