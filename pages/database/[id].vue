@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronRight, Home, Loader2, X } from "lucide-vue-next";
+import { ChevronRight, ExternalLink, Home, Loader2, X } from "lucide-vue-next";
 import { DATABASES } from "~/core";
 
 
@@ -18,6 +18,12 @@ const databaseKey = Object.entries(DATABASES).find(([_, id]) => id === databaseI
 
 // Use the actual database title from API, fallback to formatted key name
 const databaseName = computed(() => database.value?.title || databaseKey.replace(/_/g, " ") || "Unknown");
+
+// Compute the Notion URL for the database
+const notionUrl = computed(() => {
+  if (!database.value?.id) return "";
+  return `https://www.notion.so/${database.value.id.replace(/-/g, "")}`;
+});
 
 // Form state
 const sourceType = ref<"IMDB" | "OTHER">("IMDB");
@@ -257,6 +263,17 @@ onUnmounted(() => {
       <h1 class="page-title">
         {{ databaseName }}
       </h1>
+      <a
+        v-if="notionUrl"
+        :href="notionUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="notion-link-button"
+        title="Open in Notion"
+      >
+        <span>Open in Notion</span>
+        <ExternalLink :size="16" />
+      </a>
     </div>
 
     <!-- Page Content -->
@@ -561,6 +578,11 @@ onUnmounted(() => {
 /* Page Header */
 .page-header {
   margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .page-title {
@@ -569,6 +591,39 @@ onUnmounted(() => {
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
+}
+
+.notion-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(55, 53, 47, 0.65);
+  background: transparent;
+  border: 1px solid rgba(55, 53, 47, 0.16);
+  border-radius: 3px;
+  text-decoration: none;
+  transition: all 20ms ease-in;
+  cursor: pointer;
+}
+
+.notion-link-button:hover {
+  background: rgba(55, 53, 47, 0.08);
+  color: var(--color-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  .notion-link-button {
+    color: rgba(255, 255, 255, 0.45);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+
+  .notion-link-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+  }
 }
 
 /* Page Body */
