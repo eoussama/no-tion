@@ -1,3 +1,7 @@
+import type { TImdbSearchResponse } from "~/core";
+
+
+
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
   const searchQuery = query.q as string;
@@ -7,15 +11,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const response = await $fetch<{ titles: Array<{
-      id: string;
-      primaryTitle: string;
-      type: string;
-      startYear?: number;
-      primaryImage?: { url: string };
-      runtimeSeconds?: number;
-      rating?: { aggregateRating: number; voteCount: number };
-    }>; }>(`https://api.imdbapi.dev/search/titles`, {
+    const response = await $fetch<TImdbSearchResponse>(`https://api.imdbapi.dev/search/titles`, {
       params: {
         query: searchQuery,
         limit: 10,

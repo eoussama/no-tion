@@ -1,20 +1,10 @@
 <script setup lang="ts">
-import type { TNullable } from "~/core";
+import type { TDatabasePagesResponse, TImdbSearchResponse, TImdbTitle, TNullable } from "~/core";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { AlertCircle, CheckCircle, ChevronRight, ExternalLink, Home, Loader2, X } from "lucide-vue-next";
 import { DATABASES } from "~/core";
 
 
-
-type TImdbTitle = {
-  id: string;
-  primaryTitle: string;
-  type: string;
-  startYear?: number;
-  primaryImage?: { url: string };
-  runtimeSeconds?: number;
-  rating?: { aggregateRating: number; voteCount: number };
-};
 
 const route = useRoute();
 const databaseId = route.params.id as string;
@@ -61,7 +51,7 @@ const isSubmitting = ref(false);
 const { data: existingPagesData } = useQuery({
   queryKey: ["database-pages", databaseId],
   queryFn: async () => {
-    const response = await $fetch<{ pages: Array<{ id: string; infoUrl: TNullable<string> }> }>(`/api/notion/database/${databaseId}/pages`);
+    const response = await $fetch<TDatabasePagesResponse>(`/api/notion/database/${databaseId}/pages`);
 
     return response.pages;
   },
@@ -124,15 +114,7 @@ async function searchImdb() {
   showResults.value = true;
 
   try {
-    const response = await $fetch<{ titles: Array<{
-      id: string;
-      primaryTitle: string;
-      type: string;
-      startYear?: number;
-      primaryImage?: { url: string };
-      runtimeSeconds?: number;
-      rating?: { aggregateRating: number; voteCount: number };
-    }>; }>("/api/imdb/search", {
+    const response = await $fetch<TImdbSearchResponse>("/api/imdb/search", {
       params: { q: imdbSearchQuery.value },
     });
 

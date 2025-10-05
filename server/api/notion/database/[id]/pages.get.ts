@@ -1,8 +1,8 @@
-import type { TNullable, TUnsafe } from "~/core";
+import type { TDatabasePage, TDatabasePagesResponse, TNullable, TUnsafe } from "~/core";
 
 
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<TDatabasePagesResponse> => {
   const config = useRuntimeConfig(event);
   const apiKey = config.notionApiKey;
   const databaseId = getRouterParam(event, "id");
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const allPages: Array<{ id: string; infoUrl: TNullable<string> }> = [];
+    const allPages: Array<TDatabasePage> = [];
     let cursor: TUnsafe<string>;
     let hasMore = true;
 
