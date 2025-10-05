@@ -22,8 +22,6 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    console.log("IMDB API raw response (first title):", response.titles?.[0]);
-
     return {
       titles: response.titles || [],
     };
