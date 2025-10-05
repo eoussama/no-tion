@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TNullable } from "@eoussama/core";
+import type { TNullable } from "~/core";
 import { AlertCircle, ChevronRight, Database } from "lucide-vue-next";
 
 

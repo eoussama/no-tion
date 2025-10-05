@@ -1,3 +1,7 @@
+import type { TNullable, TUnsafe } from "~/core";
+
+
+
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
   const apiKey = config.notionApiKey;
@@ -18,8 +22,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const allPages: Array<{ id: string; infoUrl: string | null }> = [];
-    let cursor: string | undefined;
+    const allPages: Array<{ id: string; infoUrl: TNullable<string> }> = [];
+    let cursor: TUnsafe<string>;
     let hasMore = true;
 
     // Fetch all pages with pagination
@@ -52,7 +56,7 @@ export default defineEventHandler(async (event) => {
           };
         }>;
         has_more: boolean;
-        next_cursor: string | null;
+        next_cursor: TNullable<string>;
       };
 
       // Extract Info URLs from this batch

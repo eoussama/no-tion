@@ -1,5 +1,4 @@
-import type { TNullable } from "@eoussama/core";
-import type { TNotionDatabase, TNotionUser, TNotionWorkspace, TNotionWorkspaceData } from "~/core";
+import type { TNotionDatabase, TNotionUser, TNotionWorkspace, TNotionWorkspaceData, TNullable } from "~/core";
 import { Client } from "@notionhq/client";
 import { DATABASE_IDS } from "~/core";
 

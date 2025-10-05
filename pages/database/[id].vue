@@ -1,9 +1,20 @@
 <script setup lang="ts">
+import type { TNullable } from "~/core";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { AlertCircle, CheckCircle, ChevronRight, ExternalLink, Home, Loader2, X } from "lucide-vue-next";
 import { DATABASES } from "~/core";
 
 
+
+type TImdbTitle = {
+  id: string;
+  primaryTitle: string;
+  type: string;
+  startYear?: number;
+  primaryImage?: { url: string };
+  runtimeSeconds?: number;
+  rating?: { aggregateRating: number; voteCount: number };
+};
 
 const route = useRoute();
 const databaseId = route.params.id as string;
@@ -39,26 +50,18 @@ const otherPosterUrl = ref("");
 const otherType = ref("Movie");
 const genre = ref("Other");
 const imdbSearchQuery = ref("");
-const imdbSearchResults = ref<Array<{
-  id: string;
-  primaryTitle: string;
-  type: string;
-  startYear?: number;
-  primaryImage?: { url: string };
-  runtimeSeconds?: number;
-  rating?: { aggregateRating: number; voteCount: number };
-}>>([]);
+const imdbSearchResults = ref<Array<TImdbTitle>>([]);
 const isSearching = ref(false);
-const selectedImdbTitle = ref<{ id: string; primaryTitle: string; type: string; startYear?: number; primaryImage?: { url: string }; runtimeSeconds?: number; rating?: { aggregateRating: number; voteCount: number } } | null>(null);
+const selectedImdbTitle = ref<TNullable<TImdbTitle>>(null);
 const showResults = ref(false);
-const autocompleteRef = ref<HTMLElement | null>(null);
+const autocompleteRef = ref<TNullable<HTMLElement>>(null);
 const isSubmitting = ref(false);
 
 // Fetch existing pages using TanStack Query
 const { data: existingPagesData } = useQuery({
   queryKey: ["database-pages", databaseId],
   queryFn: async () => {
-    const response = await $fetch<{ pages: Array<{ id: string; infoUrl: string | null }> }>(`/api/notion/database/${databaseId}/pages`);
+    const response = await $fetch<{ pages: Array<{ id: string; infoUrl: TNullable<string> }> }>(`/api/notion/database/${databaseId}/pages`);
 
     return response.pages;
   },
@@ -79,7 +82,7 @@ const existingImdbUrls = computed(() => {
 });
 
 // Toast state
-const toast = ref<{ message: string; type: "success" | "error" } | null>(null);
+const toast = ref<TNullable<{ message: string; type: "success" | "error" }>>(null);
 
 // Check if a movie already exists in the database
 function isMovieInDatabase(imdbId: string): boolean {
