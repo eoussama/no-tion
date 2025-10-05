@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TNullable } from "@eoussama/core";
-import { Building2, LogOut, XCircle } from "lucide-vue-next";
+import { Building2, Github, LogOut, XCircle } from "lucide-vue-next";
 
 
 
@@ -58,6 +58,16 @@ async function handleLogout() {
             <span class="header-status-text">{{ workspace?.name || 'Workspace' }}</span>
             <span class="header-status-dot" />
           </div>
+
+          <a
+            href="http://git.ouss.es"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-button"
+            title="View on GitHub"
+          >
+            <Github :size="16" />
+          </a>
 
           <button class="logout-button" title="Logout" @click="handleLogout">
             <LogOut :size="16" />
@@ -166,6 +176,36 @@ async function handleLogout() {
   }
 
   .logout-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+.github-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: none;
+  background: transparent;
+  color: rgba(55, 53, 47, 0.65);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 20ms ease-in;
+  text-decoration: none;
+}
+
+.github-button:hover {
+  background: rgba(55, 53, 47, 0.08);
+  color: var(--color-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  .github-button {
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .github-button:hover {
     background: rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.9);
   }
