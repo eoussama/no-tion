@@ -63,7 +63,7 @@ async function handleLogout() {
           </div>
 
           <a
-            href="http://git.ouss.es"
+            href="http://git.ouss.es/no-tion"
             target="_blank"
             rel="noopener noreferrer"
             class="github-button"

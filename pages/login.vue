@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Loader2 } from "lucide-vue-next";
+import { Github, Loader2 } from "lucide-vue-next";
+import packageJson from "../package.json";
 
 
 
@@ -17,6 +18,7 @@ if (authStatus.value?.authenticated) {
 const password = ref("");
 const isSubmitting = ref(false);
 const error = ref("");
+const appVersion = packageJson.version;
 
 async function handleLogin() {
   if (!password.value) {
@@ -52,7 +54,7 @@ async function handleLogin() {
       <div class="login-header">
         <img alt="no-tion logo" class="login-logo" src="/logo.png">
         <p class="login-subtitle">
-          Enter password to continue
+          Enter the password to continue
         </p>
       </div>
 
@@ -81,6 +83,21 @@ async function handleLogin() {
           <span v-else>Sign In</span>
         </button>
       </form>
+
+      <!-- GitHub Link -->
+      <div class="login-footer">
+        <a
+          href="http://git.ouss.es/no-tion"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="github-link"
+          :title="`View on GitHub - v${appVersion}`"
+        >
+          <Github :size="16" />
+          <span>View on GitHub</span>
+          <span class="version-badge">v{{ appVersion }}</span>
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -243,6 +260,74 @@ async function handleLogin() {
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+.login-footer {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(55, 53, 47, 0.09);
+  display: flex;
+  justify-content: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .login-footer {
+    border-top-color: rgba(255, 255, 255, 0.09);
+  }
+}
+
+.github-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: transparent;
+  color: rgba(55, 53, 47, 0.65);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 20ms ease-in;
+}
+
+.github-link:hover {
+  background: rgba(55, 53, 47, 0.08);
+  color: var(--color-text);
+}
+
+.github-link .version-badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(55, 53, 47, 0.08);
+  color: rgba(55, 53, 47, 0.65);
+  transition: all 20ms ease-in;
+}
+
+.github-link:hover .version-badge {
+  background: rgba(55, 53, 47, 0.12);
+  color: var(--color-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  .github-link {
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .github-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .github-link .version-badge {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .github-link:hover .version-badge {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
   }
 }
 </style>
