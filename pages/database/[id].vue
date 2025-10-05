@@ -41,9 +41,11 @@ const imdbSearchResults = ref<Array<{
   type: string;
   startYear?: number;
   primaryImage?: { url: string };
+  runtimeSeconds?: number;
+  rating?: { aggregateRating: number; voteCount: number };
 }>>([]);
 const isSearching = ref(false);
-const selectedImdbTitle = ref<{ id: string; primaryTitle: string; type: string; startYear?: number; primaryImage?: { url: string } } | null>(null);
+const selectedImdbTitle = ref<{ id: string; primaryTitle: string; type: string; startYear?: number; primaryImage?: { url: string }; runtimeSeconds?: number; rating?: { aggregateRating: number; voteCount: number } } | null>(null);
 const showResults = ref(false);
 const autocompleteRef = ref<HTMLElement | null>(null);
 const isSubmitting = ref(false);
@@ -80,11 +82,14 @@ async function searchImdb() {
       type: string;
       startYear?: number;
       primaryImage?: { url: string };
+      runtimeSeconds?: number;
+      rating?: { aggregateRating: number; voteCount: number };
     }>; }>("/api/imdb/search", {
       params: { q: imdbSearchQuery.value },
     });
 
     imdbSearchResults.value = response.titles || [];
+    console.log("IMDB API Response:", response.titles?.[0]);
   }
   catch (error) {
     console.error("Search error:", error);
@@ -117,6 +122,7 @@ function formatTitleType(type: string): string {
     tvMiniSeries: "TV Mini-Series",
     tvSpecial: "TV Special",
     tvMovie: "TV Movie",
+    tvShort: "TV Short",
     short: "Short",
     video: "Video",
     videoGame: "Video Game",
@@ -154,7 +160,7 @@ watch(sourceType, () => {
   otherTitle.value = "";
   otherPosterUrl.value = "";
   otherType.value = "Movie";
-  genre.value = "Hollywood";
+  genre.value = "Other";
 });
 
 // Show toast notification
@@ -208,7 +214,7 @@ async function handleSubmit() {
       otherPosterUrl.value = "";
       otherType.value = "Movie";
     }
-    genre.value = "Hollywood";
+    genre.value = "Other";
 
     // Show success toast
     showToast("Entry added successfully!", "success");
@@ -361,7 +367,10 @@ onUnmounted(() => {
                     {{ title.primaryTitle }}
                   </div>
                   <div class="autocomplete-item-meta">
-                    {{ formatTitleType(title.type) }} • {{ title.startYear || 'N/A' }}
+                    {{ formatTitleType(title.type) }}
+                    <span v-if="title.startYear"> • {{ title.startYear }}</span>
+                    <span v-if="title.runtimeSeconds"> • {{ Math.round(title.runtimeSeconds / 60) }} min</span>
+                    <span v-if="title.rating?.aggregateRating"> • {{ title.rating.aggregateRating.toFixed(1) }}</span>
                   </div>
                 </div>
               </button>

@@ -13,12 +13,16 @@ export default defineEventHandler(async (event) => {
       type: string;
       startYear?: number;
       primaryImage?: { url: string };
+      runtimeSeconds?: number;
+      rating?: { aggregateRating: number; voteCount: number };
     }>; }>(`https://api.imdbapi.dev/search/titles`, {
       params: {
         query: searchQuery,
         limit: 10,
       },
     });
+
+    console.log("IMDB API raw response (first title):", response.titles?.[0]);
 
     return {
       titles: response.titles || [],
