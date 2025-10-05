@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
-import { CheckCircle, ChevronRight, ExternalLink, Home, Loader2, X } from "lucide-vue-next";
+import { AlertCircle, CheckCircle, ChevronRight, ExternalLink, Home, Loader2, X } from "lucide-vue-next";
 import { DATABASES } from "~/core";
 
 
@@ -57,6 +57,7 @@ const { data: existingPagesData } = useQuery({
   queryKey: ["database-pages", databaseId],
   queryFn: async () => {
     const response = await $fetch<{ pages: Array<{ id: string; infoUrl: string | null }> }>(`/api/notion/database/${databaseId}/pages`);
+
     return response.pages;
   },
   staleTime: 5 * 60 * 1000, // 5 minutes
@@ -85,6 +86,15 @@ function isMovieInDatabase(imdbId: string): boolean {
 
   return exists;
 }
+
+// Check if selected title already exists
+const isSelectedTitleInDatabase = computed(() => {
+  if (sourceType.value === "IMDB" && selectedImdbTitle.value) {
+    return isMovieInDatabase(selectedImdbTitle.value.id);
+  }
+
+  return false;
+});
 
 // Computed validation for form
 const isFormValid = computed(() => {
@@ -615,13 +625,19 @@ onUnmounted(() => {
 
         <!-- Submit Button -->
         <div class="form-section">
-          <button
-            :disabled="!isFormValid || isSubmitting"
-            class="submit-button"
-            @click="handleSubmit"
-          >
-            {{ isSubmitting ? 'Adding...' : 'Add Entry' }}
-          </button>
+          <div class="submit-section">
+            <div v-if="isSelectedTitleInDatabase" class="duplicate-warning" title="This title is already in your database">
+              <AlertCircle :size="18" />
+              <span>Already added</span>
+            </div>
+            <button
+              :disabled="!isFormValid || isSubmitting"
+              class="submit-button"
+              @click="handleSubmit"
+            >
+              {{ isSubmitting ? 'Adding...' : 'Add Entry' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -849,6 +865,34 @@ onUnmounted(() => {
 
 .radio-option-active .radio-label {
   color: var(--color-text);
+}
+
+/* Submit Section */
+.submit-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.duplicate-warning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 3px;
+  background: rgba(251, 191, 36, 0.1);
+  color: rgb(217, 119, 6);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: help;
+}
+
+@media (prefers-color-scheme: dark) {
+  .duplicate-warning {
+    background: rgba(251, 191, 36, 0.15);
+    color: rgb(251, 191, 36);
+  }
 }
 
 /* Submit Button */
