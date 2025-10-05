@@ -33,7 +33,7 @@ const otherUrl = ref("");
 const otherTitle = ref("");
 const otherPosterUrl = ref("");
 const otherType = ref("Movie");
-const genre = ref("Hollywood");
+const genre = ref("Other");
 const imdbSearchQuery = ref("");
 const imdbSearchResults = ref<Array<{
   id: string;
