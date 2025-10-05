@@ -94,7 +94,7 @@ async function handleLogin() {
           :title="`View on GitHub - v${appVersion}`"
         >
           <Github :size="16" />
-          <span>View on GitHub</span>
+          <span class="github-text">View on GitHub</span>
           <span class="version-badge">v{{ appVersion }}</span>
         </a>
       </div>
@@ -112,6 +112,12 @@ async function handleLogin() {
   padding: 20px;
 }
 
+@media (max-width: 640px) {
+  .login-container {
+    padding: 0;
+  }
+}
+
 .login-card {
   width: 100%;
   max-width: 400px;
@@ -119,6 +125,17 @@ async function handleLogin() {
   border-radius: 8px;
   padding: 48px 40px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 640px) {
+  .login-card {
+    padding: 32px 24px;
+    max-width: 100%;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -133,11 +150,24 @@ async function handleLogin() {
   margin-bottom: 32px;
 }
 
+@media (max-width: 640px) {
+  .login-header {
+    margin-bottom: 24px;
+  }
+}
+
 .login-logo {
   width: 80px;
   height: 80px;
   border-radius: 8px;
   margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .login-logo {
+    width: 64px;
+    height: 64px;
+  }
 }
 
 .login-title {
@@ -181,6 +211,13 @@ async function handleLogin() {
   background: white;
   transition: all 20ms ease-in;
   box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .login-input {
+    padding: 14px 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
 }
 
 .login-input:focus {
@@ -230,6 +267,13 @@ async function handleLogin() {
   align-items: center;
   justify-content: center;
   gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .login-button {
+    padding: 14px 16px;
+    font-size: 16px;
+  }
 }
 
 .login-button:hover:not(:disabled) {
@@ -289,6 +333,23 @@ async function handleLogin() {
   font-size: 13px;
   font-weight: 500;
   transition: all 20ms ease-in;
+}
+
+@media (max-width: 640px) {
+  .github-link {
+    font-size: 12px;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .github-link .github-text {
+    display: none;
+  }
+
+  .github-link .version-badge {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
 }
 
 .github-link:hover {
