@@ -23,7 +23,9 @@ const databaseName = computed(() => database.value?.title || databaseKey.replace
 
 // Compute the Notion URL for the database
 const notionUrl = computed(() => {
-  if (!database.value?.id) { return ""; }
+  if (!database.value?.id) {
+    return "";
+  }
 
   return `https://www.notion.so/${database.value.id.replace(/-/g, "")}`;
 });

@@ -1,7 +1,3 @@
-import { Client } from "@notionhq/client";
-
-
-
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
   const apiKey = config.notionApiKey;
@@ -45,10 +41,22 @@ export default defineEventHandler(async (event) => {
         throw new Error(`Notion API error: ${response.statusText}`);
       }
 
-      const data = await response.json() as any;
+      const data = await response.json() as {
+        results: Array<{
+          id: string;
+          properties?: {
+            Info?: {
+              type: string;
+              url?: string;
+            };
+          };
+        }>;
+        has_more: boolean;
+        next_cursor: string | null;
+      };
 
       // Extract Info URLs from this batch
-      const batchPages = (data.results || []).map((page: any) => {
+      const batchPages = (data.results || []).map((page) => {
         const infoProperty = page.properties?.Info;
         let infoUrl = null;
 
@@ -65,7 +73,7 @@ export default defineEventHandler(async (event) => {
       allPages.push(...batchPages);
 
       hasMore = data.has_more;
-      cursor = data.next_cursor;
+      cursor = data.next_cursor ?? undefined;
     }
 
     return {
