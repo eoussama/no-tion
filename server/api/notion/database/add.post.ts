@@ -8,9 +8,9 @@ export default defineEventHandler(async (event) => {
 
   try {
     const body = await readBody(event);
-    const { databaseId, title, type, url, posterUrl } = body;
+    const { databaseId, title, type, url, posterUrl, genre } = body;
 
-    if (!databaseId || !title || !type || !url) {
+    if (!databaseId || !title || !type || !url || !genre) {
       throw createError({
         statusCode: 400,
         statusMessage: "Missing required fields",
@@ -33,6 +33,11 @@ export default defineEventHandler(async (event) => {
         Type: {
           select: {
             name: type,
+          },
+        },
+        Genre: {
+          select: {
+            name: genre,
           },
         },
         Info: {

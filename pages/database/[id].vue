@@ -33,6 +33,7 @@ const otherUrl = ref("");
 const otherTitle = ref("");
 const otherPosterUrl = ref("");
 const otherType = ref("Movie");
+const genre = ref("Hollywood");
 const imdbSearchQuery = ref("");
 const imdbSearchResults = ref<Array<{
   id: string;
@@ -153,6 +154,7 @@ watch(sourceType, () => {
   otherTitle.value = "";
   otherPosterUrl.value = "";
   otherType.value = "Movie";
+  genre.value = "Hollywood";
 });
 
 // Show toast notification
@@ -178,12 +180,14 @@ async function handleSubmit() {
           type: formatTitleType(selectedImdbTitle.value!.type),
           url: imdbUrl.value,
           posterUrl: selectedImdbTitle.value!.primaryImage?.url || "",
+          genre: genre.value,
         }
       : {
           title: otherTitle.value,
           type: otherType.value,
           url: otherUrl.value,
           posterUrl: otherPosterUrl.value,
+          genre: genre.value,
         };
 
     await $fetch("/api/notion/database/add", {
@@ -204,6 +208,7 @@ async function handleSubmit() {
       otherPosterUrl.value = "";
       otherType.value = "Movie";
     }
+    genre.value = "Hollywood";
 
     // Show success toast
     showToast("Entry added successfully!", "success");
@@ -396,6 +401,42 @@ onUnmounted(() => {
                   readonly
                 >
               </div>
+
+              <div class="form-field">
+                <label class="form-label">Genre</label>
+                <select v-model="genre" class="form-input">
+                  <option value="Anime">
+                    Anime
+                  </option>
+                  <option value="Cartoon">
+                    Cartoon
+                  </option>
+                  <option value="Hollywood">
+                    Hollywood
+                  </option>
+                  <option value="Bollywood">
+                    Bollywood
+                  </option>
+                  <option value="Arabic">
+                    Arabic (non-Moroccan)
+                  </option>
+                  <option value="Kdrama">
+                    Kdrama (Korean)
+                  </option>
+                  <option value="Jdrama">
+                    Jdrama (Japanese)
+                  </option>
+                  <option value="Cdrama">
+                    Cdrama (Chinese)
+                  </option>
+                  <option value="Lorocco">
+                    Lorocco (Moroccan)
+                  </option>
+                  <option value="Other">
+                    Other
+                  </option>
+                </select>
+              </div>
             </div>
 
             <div class="movie-details-poster">
@@ -474,6 +515,42 @@ onUnmounted(() => {
                   placeholder="https://..."
                   class="form-input"
                 >
+              </div>
+
+              <div class="form-field">
+                <label class="form-label">Genre</label>
+                <select v-model="genre" class="form-input">
+                  <option value="Anime">
+                    Anime
+                  </option>
+                  <option value="Cartoon">
+                    Cartoon
+                  </option>
+                  <option value="Hollywood">
+                    Hollywood
+                  </option>
+                  <option value="Bollywood">
+                    Bollywood
+                  </option>
+                  <option value="Arabic">
+                    Arabic (non-Moroccan)
+                  </option>
+                  <option value="Kdrama">
+                    Kdrama (Korean)
+                  </option>
+                  <option value="Jdrama">
+                    Jdrama (Japanese)
+                  </option>
+                  <option value="Cdrama">
+                    Cdrama (Chinese)
+                  </option>
+                  <option value="Lorocco">
+                    Lorocco (Moroccan)
+                  </option>
+                  <option value="Other">
+                    Other
+                  </option>
+                </select>
               </div>
             </div>
 
