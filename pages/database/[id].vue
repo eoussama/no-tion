@@ -453,6 +453,9 @@ onUnmounted(() => {
                   <option value="Anime">
                     Anime
                   </option>
+                  <option value="Animation">
+                    Animation
+                  </option>
                   <option value="Cartoon">
                     Cartoon
                   </option>
@@ -481,6 +484,16 @@ onUnmounted(() => {
                     Other
                   </option>
                 </select>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label">Franchise</label>
+                <input
+                  value="Unset"
+                  type="text"
+                  class="form-input form-input-readonly"
+                  readonly
+                >
               </div>
             </div>
 
@@ -568,6 +581,9 @@ onUnmounted(() => {
                   <option value="Anime">
                     Anime
                   </option>
+                  <option value="Animation">
+                    Animation
+                  </option>
                   <option value="Cartoon">
                     Cartoon
                   </option>
@@ -596,6 +612,16 @@ onUnmounted(() => {
                     Other
                   </option>
                 </select>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label">Franchise</label>
+                <input
+                  value="Unset"
+                  type="text"
+                  class="form-input form-input-readonly"
+                  readonly
+                >
               </div>
             </div>
 
