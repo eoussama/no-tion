@@ -1,4 +1,4 @@
-import type { TNotionDatabase, TNotionUser, TNotionWorkspace, TNotionWorkspaceData, TNullable } from "~/core";
+import type { TFailedNotionDatabase, TNotionDatabase, TNotionUser, TNotionWorkspace, TNotionWorkspaceData, TNullable } from "~/core";
 import { Client } from "@notionhq/client";
 import { DATABASE_IDS } from "~/core";
 
@@ -52,6 +52,7 @@ export default defineEventHandler(async (event): Promise<TNotionWorkspaceData> =
 
     // Fetch specific databases by ID
     const databases: Array<TNotionDatabase> = [];
+    const failedDatabases: Array<TFailedNotionDatabase> = [];
 
     for (const databaseId of DATABASE_IDS) {
       try {
@@ -71,7 +72,10 @@ export default defineEventHandler(async (event): Promise<TNotionWorkspaceData> =
         });
       }
       catch (err) {
-        console.error("Failed to fetch database", databaseId, ":", err instanceof Error ? err.message : String(err));
+        failedDatabases.push({
+          id: databaseId,
+          reason: err instanceof Error ? err.message : String(err),
+        });
       }
     }
 
@@ -79,14 +83,16 @@ export default defineEventHandler(async (event): Promise<TNotionWorkspaceData> =
       user,
       workspace,
       databases,
+      failedDatabases,
     };
   }
   catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Failed to fetch Notion data";
+    const error = err instanceof Error ? err : new Error("Failed to fetch Notion data");
 
     throw createError({
       statusCode: 500,
-      statusMessage: errorMessage,
+      statusMessage: error.message,
+      cause: error,
     });
   }
 });

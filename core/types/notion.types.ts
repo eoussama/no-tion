@@ -19,8 +19,14 @@ export type TNotionWorkspace = {
   icon?: string;
 };
 
+export type TFailedNotionDatabase = {
+  id: string;
+  reason: string;
+};
+
 export type TNotionWorkspaceData = {
   user: TNullable<TNotionUser>;
   workspace: TNullable<TNotionWorkspace>;
   databases: Array<TNotionDatabase>;
+  failedDatabases: Array<TFailedNotionDatabase>;
 };

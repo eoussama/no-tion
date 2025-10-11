@@ -1,25 +1,13 @@
 import type { TDatabasePage, TDatabasePagesResponse, TNullable, TUnsafe } from "~/core";
+import { z } from "zod";
+import { databasePagesResponseSchema } from "~/core";
+import { getRuntimeConfig } from "~/server/utils/runtime-config";
 
 
 
 export default defineEventHandler(async (event): Promise<TDatabasePagesResponse> => {
-  const config = useRuntimeConfig(event);
-  const apiKey = config.notionApiKey;
-  const databaseId = getRouterParam(event, "id");
-
-  if (!apiKey) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: "Notion API key is not configured.",
-    });
-  }
-
-  if (!databaseId) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Database ID is required.",
-    });
-  }
+  const { notionApiKey } = getRuntimeConfig(event);
+  const databaseId = z.string().min(1, "Database ID is required.").parse(getRouterParam(event, "id"));
 
   try {
     const allPages: Array<TDatabasePage> = [];
@@ -31,7 +19,7 @@ export default defineEventHandler(async (event): Promise<TDatabasePagesResponse>
       const response = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${apiKey}`,
+          "Authorization": `Bearer ${notionApiKey}`,
           "Notion-Version": "2022-06-28",
           "Content-Type": "application/json",
         },
@@ -71,7 +59,7 @@ export default defineEventHandler(async (event): Promise<TDatabasePagesResponse>
         return {
           id: page.id,
           infoUrl,
-        };
+        } satisfies TDatabasePage;
       });
 
       allPages.push(...batchPages);
@@ -80,9 +68,9 @@ export default defineEventHandler(async (event): Promise<TDatabasePagesResponse>
       cursor = data.next_cursor ?? undefined;
     }
 
-    return {
+    return databasePagesResponseSchema.parse({
       pages: allPages,
-    };
+    });
   }
   catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Failed to fetch database pages";
@@ -90,6 +78,7 @@ export default defineEventHandler(async (event): Promise<TDatabasePagesResponse>
     throw createError({
       statusCode: 500,
       statusMessage: errorMessage,
+      cause: err instanceof Error ? err : undefined,
     });
   }
 });

@@ -23,8 +23,12 @@ export default defineEventHandler(async (event) => {
     };
   }
   catch (error) {
-    console.error("IMDB API search error:", error);
+    const cause = error instanceof Error ? error : new Error("Failed to search IMDB");
 
-    return { titles: [] };
+    throw createError({
+      statusCode: 502,
+      statusMessage: "Failed to search IMDB",
+      cause,
+    });
   }
 });

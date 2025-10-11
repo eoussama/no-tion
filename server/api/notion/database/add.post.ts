@@ -1,47 +1,43 @@
 import { Client } from "@notionhq/client";
 
+import { databaseAddRequestSchema } from "~/core";
+import { getRuntimeConfig } from "~/server/utils/runtime-config";
+
 
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig(event);
-  const notion = new Client({ auth: config.notionApiKey });
+  const { notionApiKey } = getRuntimeConfig(event);
+  const notion = new Client({ auth: notionApiKey });
 
   try {
     const body = await readBody(event);
-    const { databaseId, title, type, url, posterUrl, genre } = body;
-
-    if (!databaseId || !title || !type || !url || !genre) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: "Missing required fields",
-      });
-    }
+    const payload = databaseAddRequestSchema.parse(body);
 
     // Create a new page in the database
     const pageData = {
-      parent: { database_id: databaseId },
+      parent: { database_id: payload.databaseId },
       properties: {
         Name: {
           title: [
             {
               text: {
-                content: title,
+                content: payload.title,
               },
             },
           ],
         },
         Type: {
           select: {
-            name: type,
+            name: payload.type,
           },
         },
         Genre: {
           select: {
-            name: genre,
+            name: payload.genre,
           },
         },
         Info: {
-          url,
+          url: payload.url,
         },
         Status: {
           status: {
@@ -49,11 +45,11 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
-      ...(posterUrl && {
+      ...(payload.posterUrl && {
         cover: {
           type: "external" as const,
           external: {
-            url: posterUrl,
+            url: payload.posterUrl,
           },
         },
       }),
@@ -64,10 +60,12 @@ export default defineEventHandler(async (event) => {
     return { success: true };
   }
   catch (error) {
-    console.error("Error adding entry to Notion:", error);
+    const cause = error instanceof Error ? error : new Error("Failed to add entry to database");
+
     throw createError({
       statusCode: 500,
       statusMessage: "Failed to add entry to database",
+      cause,
     });
   }
 });
