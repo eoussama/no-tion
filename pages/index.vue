@@ -41,7 +41,7 @@ const error = computed(() => (fetchError.value?.message || null) as TNullable<st
           <div class="callout-text">
             {{ error }}
           </div>
-          <button class="notion-button" @click="refetch">
+          <button class="notion-button" @click="() => refetch()">
             Retry Connection
           </button>
         </div>

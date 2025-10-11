@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { TAuthStatusResponse } from "~/core";
 import { Github, Loader2 } from "lucide-vue-next";
+
+import { authStatusResponseSchema } from "~/core";
 import packageJson from "../package.json";
 
 
@@ -9,7 +12,9 @@ definePageMeta({
 });
 
 // Check if already authenticated and redirect to home
-const { data: authStatus } = await useFetch("/api/auth/status");
+const { data: authStatus } = await useFetch<TAuthStatusResponse>("/api/auth/status", {
+  transform: payload => authStatusResponseSchema.parse(payload),
+});
 
 if (authStatus.value?.authenticated) {
   await navigateTo("/");
