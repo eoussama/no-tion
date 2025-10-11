@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TGenreOption } from "~/core";
+import { ExternalLink } from "lucide-vue-next";
 import { computed, watchEffect } from "vue";
 
 
@@ -41,7 +42,27 @@ const posterSource = computed(() => props.posterUrl ?? "");
       </div>
 
       <FormReadonlyField label="Type" :value="props.type" />
-      <FormReadonlyField label="IMDB URL" :value="props.imdbUrl" />
+
+      <div class="form-field">
+        <label class="form-label">IMDB URL</label>
+        <div class="input-with-button">
+          <input
+            :value="props.imdbUrl"
+            type="text"
+            class="form-input form-input-readonly"
+            readonly
+          >
+          <a
+            :href="props.imdbUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="input-button"
+            title="Open in IMDB"
+          >
+            <ExternalLink :size="16" />
+          </a>
+        </div>
+      </div>
 
       <div class="form-field">
         <label class="form-label">Genre</label>
@@ -208,7 +229,52 @@ select.form-input option {
   color: rgba(55, 53, 47, 0.9);
 }
 
+.input-with-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-with-button .form-input {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.input-button {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: rgba(55, 53, 47, 0.65);
+  transition: all 20ms ease-in;
+  text-decoration: none;
+}
+
+.input-button:hover {
+  background: rgba(55, 53, 47, 0.08);
+  color: rgba(55, 53, 47, 0.9);
+}
+
 @media (prefers-color-scheme: dark) {
+  .input-button {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .input-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
   .form-input {
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
   }

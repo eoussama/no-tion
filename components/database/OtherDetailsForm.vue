@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { TGenreOption, TMediaType } from "~/core";
+
+import { ExternalLink } from "lucide-vue-next";
 import { watchEffect } from "vue";
 
 
@@ -70,12 +72,24 @@ watchEffect(() => {
 
       <div class="form-field">
         <label class="form-label">URL</label>
-        <input
-          v-model="url"
-          type="url"
-          placeholder="https://..."
-          class="form-input"
-        >
+        <div class="input-wrapper">
+          <input
+            v-model="url"
+            type="url"
+            placeholder="https://..."
+            class="form-input"
+          >
+          <a
+            v-if="url"
+            :href="url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="input-button"
+            title="Open URL"
+          >
+            <ExternalLink :size="16" />
+          </a>
+        </div>
       </div>
 
       <div class="form-field">
@@ -273,6 +287,52 @@ select.form-input option {
 
   select.form-input option {
     background: rgb(32, 32, 32);
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .form-input {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.input-button {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: rgba(55, 53, 47, 0.65);
+  transition: all 20ms ease-in;
+  text-decoration: none;
+}
+
+.input-button:hover {
+  background: rgba(55, 53, 47, 0.08);
+  color: rgba(55, 53, 47, 0.9);
+}
+
+@media (prefers-color-scheme: dark) {
+  .input-button {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .input-button:hover {
+    background: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.9);
   }
 }
