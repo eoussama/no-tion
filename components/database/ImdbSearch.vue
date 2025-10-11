@@ -421,6 +421,12 @@ const shouldDisplayDropdown = computed(() => showResults.value && props.results.
   margin-bottom: 2px;
 }
 
+@media (prefers-color-scheme: dark) {
+  .autocomplete-item-title {
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
+
 .autocomplete-item-exists {
   opacity: 0.6;
 }

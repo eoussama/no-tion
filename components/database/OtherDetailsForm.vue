@@ -248,6 +248,11 @@ watchEffect(() => {
   color: rgba(55, 53, 47, 0.4);
 }
 
+select.form-input option {
+  background: white;
+  color: rgba(55, 53, 47, 0.9);
+}
+
 @media (prefers-color-scheme: dark) {
   .form-input {
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
@@ -264,6 +269,11 @@ watchEffect(() => {
 
   .form-input::placeholder {
     color: rgba(255, 255, 255, 0.4);
+  }
+
+  select.form-input option {
+    background: rgb(32, 32, 32);
+    color: rgba(255, 255, 255, 0.9);
   }
 }
 </style>
