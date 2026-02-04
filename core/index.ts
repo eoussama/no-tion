@@ -1,4 +1,4 @@
-export * from "./constants/genre.constants";
+export * from "./constants/genres.const";
 export * from "./constants/media.constants";
 export * from "./constants/notion.constants";
 export * from "./enums/media.enums";

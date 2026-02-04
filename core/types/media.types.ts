@@ -1,10 +1,10 @@
-import type { GENRE_OPTIONS } from "../constants/genre.constants";
+import type { GENRES } from "../constants/genres.const";
 import type { MEDIA_TYPE_OPTIONS } from "../constants/media.constants";
 import type { MediaSourceType } from "../enums/media.enums";
 
 
 
-export type TGenreOption = typeof GENRE_OPTIONS[number];
+export type TGenreOption = typeof GENRES[number];
 export type TMediaType = typeof MEDIA_TYPE_OPTIONS[number];
 
 export type TToastKind = "success" | "error";

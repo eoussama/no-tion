@@ -11,7 +11,7 @@ import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, onScopeDispose, reactive, ref, watch } from "vue";
 import {
   DEFAULT_GENRE,
-  GENRE_OPTIONS,
+  GENRES,
   MEDIA_TYPE_OPTIONS,
   MediaSourceType,
 } from "~/core";
@@ -276,7 +276,7 @@ export function useDatabaseForm(databaseId: string) {
     otherForm,
     isSubmitting,
     toast,
-    genreOptions: GENRE_OPTIONS,
+    genreOptions: GENRES,
     mediaTypeOptions: MEDIA_TYPE_OPTIONS,
     isFormValid,
     isMovieInDatabase,

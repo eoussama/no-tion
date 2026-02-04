@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-import { GENRE_OPTIONS } from "../constants/genre.constants";
+import { GENRES } from "../constants/genres.const";
 import { MEDIA_TYPE_OPTIONS } from "../constants/media.constants";
 import { MediaSourceType } from "../enums/media.enums";
 
 
 
-export const genreSchema = z.enum(GENRE_OPTIONS);
+export const genreSchema = z.enum(GENRES);
 export const mediaTypeSchema = z.enum(MEDIA_TYPE_OPTIONS);
 export const mediaSourceSchema = z.nativeEnum(MediaSourceType);
 
