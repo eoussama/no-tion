@@ -1,4 +1,4 @@
-import { SRuntimeConfig } from "./../../core/common/schemas/env.schemas";
+import { SRuntimeConfig } from "../../core/common/schemas/env.schemas";
 
 
 
