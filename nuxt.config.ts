@@ -1,4 +1,8 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from "nuxt/config";
+import pgk from "./package.json" assert { type: "json" };
+
+
+
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
@@ -18,15 +22,15 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: "en",
       },
-      title: "no-tion | Notion Database Manager",
+      title: `${pgk.name ?? "no-tion"} | Notion Database Manager`,
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "description", content: "A personal Notion account manager with forms to automate data insertion into Notion databases" },
-        { name: "author", content: "Oussama Essamadi" },
-        { name: "keywords", content: "Notion, API, database, automation, forms, manager" },
-        { property: "og:title", content: "no-tion" },
-        { property: "og:description", content: "A personal Notion account manager with forms to automate data insertion into Notion databases" },
+        { name: "description", content: pgk.description ?? "" },
+        { name: "author", content: pgk.author?.name ?? "" },
+        { name: "keywords", content: (pgk.keywords ?? []).join(", ") },
+        { property: "og:title", content: pgk.name ?? "no-tion" },
+        { property: "og:description", content: pgk.description ?? "" },
         { property: "og:image", content: "/logo.png" },
         { property: "og:type", content: "website" },
       ],
