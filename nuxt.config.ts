@@ -1,5 +1,17 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineConfig } from "./server";
+
+
+
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
+
+  typescript: {
+    typeCheck: true,
+    strict: true,
+  },
+  
+  css: ['~~/assets/css/main.css'],
+
+  ...defineConfig(),
 });
