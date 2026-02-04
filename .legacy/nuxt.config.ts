@@ -10,7 +10,7 @@ const config = ensureRuntimeConfig();
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  
+
   typescript: {
     typeCheck: true,
     strict: true,
@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     password: config.password,
     notionApiKey: config.notionApiKey,
   },
-  
+
   app: {
     head: {
       htmlAttrs: {
@@ -44,6 +44,6 @@ export default defineNuxtConfig({
       ],
     },
   },
-  
+
   css: ["~/assets/css/main.css"],
 });
