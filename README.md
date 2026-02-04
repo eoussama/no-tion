@@ -1,87 +1,75 @@
-<p align="center">
-  <img width="120" src="https://github.com/eoussama/no-tion/blob/main/public/logo.png?raw=true">
-</p>
+# Nuxt Minimal Starter
 
-<p align="center">
-A personal Notion account manager that provides forms to ease data insertion into Notion databases using the Notion SDK.
-Built with Nuxt 3 with server-side API integration for secure Notion API key handling.
-</p>
+Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-<p align="center">
-    <a href="https://github.com/eoussama/no-tion/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/eoussama/no-tion" /></a>
-    <a href="https://github.com/eoussama/no-tion/actions/workflows/publish.yml" target="_blank"><img src="https://github.com/eoussama/core/actions/workflows/publish.yml/badge.svg" /></a>
-    <img src="https://img.shields.io/github/v/release/eoussama/no-tion" />
-    <img src="https://img.shields.io/github/languages/code-size/eoussama/core" />
-</p>
+## Setup
 
-## Prerequisites
+Make sure to install dependencies:
 
-- Node.js `23.6.0` or newer
-- pnpm (recommended) or npm
-- Notion Integration Token
+```bash
+# npm
+npm install
 
-## Project Setup
-
-Install dependencies:
-
-```sh
+# pnpm
 pnpm install
+
+# yarn
+yarn install
+
+# bun
+bun install
 ```
 
-Create a `.env` file in the root directory with your Notion API key and password:
+## Development Server
 
-```sh
-NUXT_PASSWORD=your_secure_password_here
-NUXT_NOTION_API_KEY=your_notion_integration_token_here
-```
+Start the development server on `http://localhost:3000`:
 
-To get your Notion API key:
+```bash
+# npm
+npm run dev
 
-1. Go to [https://www.notion.so/my-integrations](https://www.notion.so/my-integrations)
-2. Create a new integration
-3. Copy the "Internal Integration Token"
-4. Share your databases with the integration in Notion
-
-## Development
-
-Start the development server with hot-reload:
-
-```sh
+# pnpm
 pnpm dev
+
+# yarn
+yarn dev
+
+# bun
+bun run dev
 ```
 
-The application will be available at `http://localhost:3000`
+## Production
 
-### Production Build
+Build the application for production:
 
-Type-check, compile and minify for production:
+```bash
+# npm
+npm run build
 
-```sh
+# pnpm
 pnpm build
+
+# yarn
+yarn build
+
+# bun
+bun run build
 ```
 
-Preview the production build locally:
+Locally preview production build:
 
-```sh
+```bash
+# npm
+npm run preview
+
+# pnpm
 pnpm preview
+
+# yarn
+yarn preview
+
+# bun
+bun run preview
 ```
 
-Generate static site:
-
-```sh
-pnpm generate
-```
-
-### Code Quality
-
-Lint and fix code:
-
-```sh
-pnpm lint
-```
-
-Format code:
-
-```sh
-pnpm format
-```
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
