@@ -9,7 +9,7 @@ import SourceTypeSelector from "~/components/database/SourceTypeSelector.vue";
 import ToastMessage from "~/components/ui/ToastMessage.vue";
 import { useDatabaseForm } from "~/composables/useDatabaseForm";
 import { useWorkspaceQuery } from "~/composables/useWorkspaceQuery";
-import { DATABASES, TSourceType } from "~/core";
+import { DATABASES } from "~/core";
 
 
 
