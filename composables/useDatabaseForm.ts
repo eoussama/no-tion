@@ -12,7 +12,7 @@ import { computed, onScopeDispose, reactive, ref, watch } from "vue";
 import {
   DEFAULT_GENRE,
   GENRES,
-  MEDIA_TYPE_OPTIONS,
+  TYPES,
   MediaSourceType,
 } from "~/core";
 
@@ -67,7 +67,7 @@ export function useDatabaseForm(databaseId: string) {
 
   const otherForm = reactive({
     title: "",
-    type: MEDIA_TYPE_OPTIONS[0],
+    type: TYPES[0],
     url: "",
     posterUrl: "",
   });
@@ -111,7 +111,7 @@ export function useDatabaseForm(databaseId: string) {
     otherForm.title = "";
     otherForm.url = "";
     otherForm.posterUrl = "";
-    otherForm.type = MEDIA_TYPE_OPTIONS[0];
+    otherForm.type = TYPES[0];
   }
 
   function clearImdbSelection() {
@@ -277,7 +277,7 @@ export function useDatabaseForm(databaseId: string) {
     isSubmitting,
     toast,
     genreOptions: GENRES,
-    mediaTypeOptions: MEDIA_TYPE_OPTIONS,
+    mediaTypeOptions: TYPES,
     isFormValid,
     isMovieInDatabase,
     handleSearchRequest,

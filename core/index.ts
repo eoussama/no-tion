@@ -1,5 +1,5 @@
 export * from "./constants/genres.const";
-export * from "./constants/media.constants";
+export * from "./constants/types.const";
 export * from "./constants/notion.constants";
 export * from "./enums/media.enums";
 export * from "./schemas/auth.schemas";
