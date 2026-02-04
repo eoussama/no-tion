@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { MediaSourceType } from "~/core";
+import { type TSourceType } from "~/core";
 
 
 
-const sourceType = defineModel<MediaSourceType>({
+const sourceType = defineModel<TSourceType>({
   required: true,
 });
 </script>
@@ -14,26 +14,26 @@ const sourceType = defineModel<MediaSourceType>({
     <div class="radio-group">
       <label
         class="radio-option"
-        :class="{ 'radio-option-active': sourceType === MediaSourceType.IMDB }"
+        :class="{ 'radio-option-active': sourceType === 'IMDB' }"
       >
         <input
           v-model="sourceType"
           type="radio"
           name="sourceType"
-          :value="MediaSourceType.IMDB"
+          :value="'IMDB'"
           class="radio-input"
         >
         <span class="radio-label">IMDB</span>
       </label>
       <label
         class="radio-option"
-        :class="{ 'radio-option-active': sourceType === MediaSourceType.OTHER }"
+        :class="{ 'radio-option-active': sourceType === 'OTHER' }"
       >
         <input
           v-model="sourceType"
           type="radio"
           name="sourceType"
-          :value="MediaSourceType.OTHER"
+          :value="'OTHER'"
           class="radio-input"
         >
         <span class="radio-label">Other</span>

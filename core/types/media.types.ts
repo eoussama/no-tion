@@ -1,6 +1,6 @@
 import type { GENRES } from "../constants/genres.const";
 import type { TYPES } from "../constants/types.const";
-import type { MediaSourceType } from "../enums/media.enums";
+import type { TSourceType } from "./source-type.type";
 
 
 
@@ -33,6 +33,6 @@ export type TImdbMediaForm = {
 export type TMediaSubmissionPayload = TImdbMediaForm | TOtherMediaForm;
 
 export type TMediaFormState = {
-  sourceType: MediaSourceType;
+  sourceType: TSourceType;
   genre: TGenreOption;
 };

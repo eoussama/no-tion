@@ -9,12 +9,7 @@ import type {
 } from "~/core";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, onScopeDispose, reactive, ref, watch } from "vue";
-import {
-  DEFAULT_GENRE,
-  GENRES,
-  TYPES,
-  MediaSourceType,
-} from "~/core";
+import { GENRES, TYPES, type TSourceType, } from "~/core";
 
 
 
@@ -52,7 +47,7 @@ function getDisplayTitle(title: TImdbTitle): string {
 export function useDatabaseForm(databaseId: string) {
   const queryClient = useQueryClient();
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
-  const sourceType = ref<MediaSourceType>(MediaSourceType.IMDB);
+  const sourceType = ref<TSourceType>("IMDB");
   const imdbSearchQuery = ref("");
   const imdbSearchResults = ref<Array<TImdbTitle>>([]);
   const isSearching = ref(false);
@@ -63,7 +58,7 @@ export function useDatabaseForm(databaseId: string) {
   const imdbUrl = ref("");
   const imdbPosterUrl = ref("");
 
-  const genre = ref<TGenreOption>(DEFAULT_GENRE);
+  const genre = ref<TGenreOption>("Other");
 
   const otherForm = reactive({
     title: "",
@@ -104,7 +99,7 @@ export function useDatabaseForm(databaseId: string) {
   }
 
   function resetGenre() {
-    genre.value = DEFAULT_GENRE;
+    genre.value = "Other";
   }
 
   function resetOtherForm() {
@@ -127,7 +122,7 @@ export function useDatabaseForm(databaseId: string) {
   watch(sourceType, (type) => {
     resetGenre();
 
-    if (type === MediaSourceType.IMDB) {
+    if (type === "IMDB") {
       resetOtherForm();
     }
     else {
@@ -194,7 +189,7 @@ export function useDatabaseForm(databaseId: string) {
   });
 
   const isFormValid = computed(() => {
-    if (sourceType.value === MediaSourceType.IMDB) {
+    if (sourceType.value === "IMDB") {
       return Boolean(selectedImdbTitle.value && imdbUrl.value);
     }
 
@@ -224,16 +219,16 @@ export function useDatabaseForm(databaseId: string) {
     try {
       const basePayload: TDatabaseAddRequest = {
         databaseId,
-        title: sourceType.value === MediaSourceType.IMDB ? imdbTitle.value : otherForm.title,
-        type: sourceType.value === MediaSourceType.IMDB ? imdbType.value : otherForm.type,
-        url: sourceType.value === MediaSourceType.IMDB ? imdbUrl.value : otherForm.url,
+        title: sourceType.value === "IMDB" ? imdbTitle.value : otherForm.title,
+        type: sourceType.value === "IMDB" ? imdbType.value : otherForm.type,
+        url: sourceType.value === "IMDB" ? imdbUrl.value : otherForm.url,
         genre: genre.value,
       };
 
-      if (sourceType.value === MediaSourceType.IMDB && imdbPosterUrl.value) {
+      if (sourceType.value === "IMDB" && imdbPosterUrl.value) {
         basePayload.posterUrl = imdbPosterUrl.value;
       }
-      else if (sourceType.value === MediaSourceType.OTHER && otherForm.posterUrl) {
+      else if (sourceType.value === "OTHER" && otherForm.posterUrl) {
         basePayload.posterUrl = otherForm.posterUrl;
       }
 
@@ -244,7 +239,7 @@ export function useDatabaseForm(databaseId: string) {
 
       await queryClient.invalidateQueries({ queryKey: ["database-pages", databaseId] });
 
-      if (sourceType.value === MediaSourceType.IMDB) {
+      if (sourceType.value === "IMDB") {
         clearImdbSelection();
       }
       else {

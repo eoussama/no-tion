@@ -9,7 +9,7 @@ import SourceTypeSelector from "~/components/database/SourceTypeSelector.vue";
 import ToastMessage from "~/components/ui/ToastMessage.vue";
 import { useDatabaseForm } from "~/composables/useDatabaseForm";
 import { useWorkspaceQuery } from "~/composables/useWorkspaceQuery";
-import { DATABASES, MediaSourceType } from "~/core";
+import { DATABASES, TSourceType } from "~/core";
 
 
 
@@ -102,7 +102,7 @@ const isSelectedTitleInDatabase = computed(() =>
         <SourceTypeSelector v-model="sourceType" />
 
         <ImdbSearch
-          v-if="sourceType === MediaSourceType.IMDB"
+          v-if="sourceType === 'IMDB'"
           v-model="imdbSearchQuery"
           :results="imdbSearchResults"
           :selected-title="selectedImdbTitle"
@@ -113,7 +113,7 @@ const isSelectedTitleInDatabase = computed(() =>
           @request-search="handleSearchRequest"
         />
 
-        <div v-if="sourceType === MediaSourceType.IMDB && selectedImdbTitle" class="form-section">
+        <div v-if="sourceType === 'IMDB' && selectedImdbTitle" class="form-section">
           <ImdbDetailsForm
             v-model:title="imdbTitle"
             v-model:genre="genre"
@@ -124,7 +124,7 @@ const isSelectedTitleInDatabase = computed(() =>
           />
         </div>
 
-        <div v-if="sourceType === MediaSourceType.OTHER" class="form-section">
+        <div v-if="sourceType === 'OTHER'" class="form-section">
           <OtherDetailsForm
             v-model:title="otherForm.title"
             v-model:type="otherForm.type"
@@ -139,7 +139,7 @@ const isSelectedTitleInDatabase = computed(() =>
         <div class="form-section">
           <div class="submit-section">
             <div
-              v-if="sourceType === MediaSourceType.IMDB && isSelectedTitleInDatabase"
+              v-if="sourceType === 'IMDB' && isSelectedTitleInDatabase"
               class="duplicate-warning"
               title="This title is already in your database"
             >
