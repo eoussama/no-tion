@@ -2,7 +2,7 @@
 import type { TAuthStatusResponse } from "~/core";
 import { Github, Loader2 } from "lucide-vue-next";
 
-import { authStatusResponseSchema } from "~/core";
+import { SAuthStatusResponse } from "~/core";
 import packageJson from "../package.json";
 
 
@@ -13,7 +13,7 @@ definePageMeta({
 
 // Check if already authenticated and redirect to home
 const { data: authStatus } = await useFetch<TAuthStatusResponse>("/api/auth/status", {
-  transform: payload => authStatusResponseSchema.parse(payload),
+  transform: payload => SAuthStatusResponse.parse(payload),
 });
 
 if (authStatus.value?.authenticated) {

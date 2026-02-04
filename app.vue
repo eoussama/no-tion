@@ -4,7 +4,6 @@ import { Building2, Github, LogOut, XCircle } from "lucide-vue-next";
 import packageJson from "./package.json";
 
 
-
 const route = useRoute();
 const isLoginPage = computed(() => route.path === "/login");
 

@@ -1,5 +1,5 @@
 import type { TAuthStatusResponse } from "~/core";
-import { authStatusResponseSchema } from "~/core";
+import { SAuthStatusResponse } from "~/core";
 
 
 
@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // Check authentication status
   const { data } = await useFetch<TAuthStatusResponse>("/api/auth/status", {
-    transform: payload => authStatusResponseSchema.parse(payload),
+    transform: payload => SAuthStatusResponse.parse(payload),
   });
 
   if (!data.value?.authenticated) {

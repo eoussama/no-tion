@@ -1,16 +1,17 @@
-import { runtimeConfigSchema } from "~/core";
+import { SRuntimeConfig } from "./../../core/common/schemas/env.schemas";
 
 
 
 /**
+ * @description
  * Validates and returns the runtime configuration values.
  *
- * @param event - The incoming HTTP event.
+ * @param {Parameters<typeof useRuntimeConfig>[0]} event The incoming HTTP event.
  * @returns The validated runtime configuration.
  */
 export function getRuntimeConfig(event: Parameters<typeof useRuntimeConfig>[0]) {
   const config = useRuntimeConfig(event);
-  const result = runtimeConfigSchema.safeParse({
+  const result = SRuntimeConfig.safeParse({
     notionApiKey: config.notionApiKey,
     password: config.password,
   });
@@ -18,10 +19,21 @@ export function getRuntimeConfig(event: Parameters<typeof useRuntimeConfig>[0]) 
   if (!result.success) {
     throw createError({
       statusCode: 500,
-      statusMessage: "Invalid runtime configuration",
       cause: result.error,
+      statusMessage: "Invalid runtime configuration",
     });
   }
 
   return result.data;
+}
+
+/**
+ * @description
+ * Crashes the app if the runtime configuration is invalid.
+ */
+export function ensureRuntimeConfig() {
+  return SRuntimeConfig.parse({
+    password: process.env.NUXT_PASSWORD,
+    notionApiKey: process.env.NUXT_NOTION_API_KEY,
+  });
 }
