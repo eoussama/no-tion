@@ -1,6 +1,6 @@
 import type { TFailedNotionDatabase, TNotionDatabase, TNotionUser, TNotionWorkspace, TNotionWorkspaceData, TNullable } from "~/core";
 import { Client } from "@notionhq/client";
-import { DATABASE_IDS } from "~/core";
+import { DATABASES } from "~/core";
 
 
 
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event): Promise<TNotionWorkspaceData> =
     const databases: Array<TNotionDatabase> = [];
     const failedDatabases: Array<TFailedNotionDatabase> = [];
 
-    for (const databaseId of DATABASE_IDS) {
+    for (const databaseId of Object.values<string>(DATABASES)) {
       try {
         const db = await notion.databases.retrieve({ database_id: databaseId }) as {
           id: string;
