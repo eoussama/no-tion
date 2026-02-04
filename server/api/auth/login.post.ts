@@ -1,4 +1,4 @@
-import { loginRequestSchema } from "~/core";
+import { SLoginRequest } from "~/core";
 import { getRuntimeConfig } from "~/server/utils/runtime-config";
 
 
@@ -6,7 +6,7 @@ import { getRuntimeConfig } from "~/server/utils/runtime-config";
 export default defineEventHandler(async (event) => {
   const config = getRuntimeConfig(event);
   const body = await readBody(event);
-  const result = loginRequestSchema.safeParse(body);
+  const result = SLoginRequest.safeParse(body);
 
   if (!result.success) {
     throw createError({

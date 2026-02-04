@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { GENRES } from "../consts/genres.const";
-import { TYPES } from "../consts/types.const";
+import { GENRES } from "../cinema-tv/consts/genres.const";
+import { TYPES } from "../cinema-tv/consts/types.const";
 
 
 
