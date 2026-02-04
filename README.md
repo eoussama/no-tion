@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-A personal Notion account manager that provides forms to automate data insertion into Notion databases using the Notion API.
+A personal Notion account manager that provides forms to ease data insertion into Notion databases using the Notion SDK.
 Built with Nuxt 3 with server-side API integration for secure Notion API key handling.
 </p>
 
@@ -16,7 +16,7 @@ Built with Nuxt 3 with server-side API integration for secure Notion API key han
 
 ## Prerequisites
 
-- Node.js `^20.19.0` or `>=22.12.0`
+- Node.js `23.6.0` or newer
 - pnpm (recommended) or npm
 - Notion Integration Token
 
@@ -31,8 +31,8 @@ pnpm install
 Create a `.env` file in the root directory with your Notion API key and password:
 
 ```sh
-NUXT_NOTION_API_KEY=your_notion_integration_token_here
 NUXT_PASSWORD=your_secure_password_here
+NUXT_NOTION_API_KEY=your_notion_integration_token_here
 ```
 
 To get your Notion API key:
@@ -52,7 +52,7 @@ pnpm dev
 
 The application will be available at `http://localhost:3000`
 
-## Production Build
+### Production Build
 
 Type-check, compile and minify for production:
 
@@ -72,7 +72,7 @@ Generate static site:
 pnpm generate
 ```
 
-## Code Quality
+### Code Quality
 
 Lint and fix code:
 
@@ -85,22 +85,3 @@ Format code:
 ```sh
 pnpm format
 ```
-
-## Architecture
-
-- **Nuxt 3** - Full-stack Vue framework with server-side rendering
-- **Server API Routes** - Notion API calls handled securely on the server
-- **TypeScript** - Type-safe development
-- **Notion SDK** - Official Notion JavaScript SDK
-
-All Notion API calls are made server-side to keep your API key secure and never expose it to the client.
-
-## Notion API Integration
-
-This project uses the Notion API to interact with your Notion workspace. You'll need:
-
-1. A Notion account
-2. A Notion integration (API key)
-3. Database IDs you want to interact with
-
-Refer to the [Notion API documentation](https://developers.notion.com/) for setup instructions.
