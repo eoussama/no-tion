@@ -1,5 +1,5 @@
-import type { GENRES } from "../constants/genres.const";
-import type { TYPES } from "../constants/types.const";
+import type { GENRES } from "../consts/genres.const";
+import type { TYPES } from "../consts/types.const";
 import type { TSourceType } from "./source-type.type";
 
 

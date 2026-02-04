@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { GENRES } from "../constants/genres.const";
-import { TYPES } from "../constants/types.const";
+import { GENRES } from "../consts/genres.const";
+import { TYPES } from "../consts/types.const";
 
 
 
