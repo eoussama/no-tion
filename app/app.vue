@@ -15,7 +15,9 @@ function onLogout(): void {
   <div class="app">
     <header>
       no-tion
-      <button v-if="auth.isLoggedIn" @click="onLogout">Logout</button>
+      <button v-if="auth.isLoggedIn" @click="onLogout">
+        Logout
+      </button>
     </header>
 
     <main class="page">
