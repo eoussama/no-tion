@@ -18,6 +18,7 @@ function onLogout(): void {
       <button v-if="auth.isLoggedIn" @click="onLogout">
         Logout
       </button>
+    <hr />
     </header>
 
     <main class="page">
