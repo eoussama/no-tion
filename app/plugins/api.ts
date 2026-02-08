@@ -1,18 +1,16 @@
 export default defineNuxtPlugin(() => {
-  const headers = useRequestHeaders(["cookie"]);
-
   return {
     provide: {
       apiFetch: $fetch.create({
         baseURL: "/api",
         credentials: "include",
-        headers,
+        headers: useRequestHeaders(["cookie"]),
 
         async onResponseError({ response: { _data: data } }) {
           if (data.error) {
             alert(data.message);
           }
-        }
+        },
       }),
     },
   };
