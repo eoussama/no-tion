@@ -1,4 +1,4 @@
-import { tryCatch } from "@eoussama/core";
+import { tryCatch } from "~~/core";
 import { generateToken, isPasswordValid } from "~~/server/utils";
 
 
