@@ -1,12 +1,12 @@
 export type TNotionDatabase = {
-  id: string
-  title: string
-  lastEditedTime: string
+  id: string;
+  title: string;
+  lastEditedTime: string;
 
-  icon?: string
-}
+  icon?: string;
+};
 
 export type TFailedNotionDatabase = {
-  id: string
-  reason: string
-}
+  id: string;
+  reason: string;
+};

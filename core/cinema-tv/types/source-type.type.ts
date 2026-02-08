@@ -1,1 +1,1 @@
-export type TSourceType = "IMDB" | "OTHER"
+export type TSourceType = "IMDB" | "OTHER";
