@@ -1,18 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useAuthStore } from "~/stores";
+
 
 
 const password = ref("");
 
-async function onLogin(): Promise<void> {
-	const [err, success] = await useAuth().login(password.value);
-
-	if (err || !success) {
-		console.error("Login failed:", err);
-		return;
-	}
-
-	navigateTo("/");
+async function onLogin() {
+	useAuthStore().login(password.value);
 }
 </script>
 
