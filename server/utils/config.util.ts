@@ -5,6 +5,7 @@ import { SRuntimeConfig, type TRuntimeConfig } from "../../core";
 
 function getEnvVars(): TRuntimeConfig {
   return SRuntimeConfig.parse({
+		secret: process.env.NUXT_SECRET,
     password: process.env.NUXT_PASSWORD,
     notionApiKey: process.env.NUXT_NOTION_API_KEY,
   });
@@ -15,6 +16,7 @@ export function defineConfig() {
 
 	return {
 		runtimeConfig: {
+			secret: config.secret,
 			password: config.password,
 			notionApiKey: config.notionApiKey,
 		},
