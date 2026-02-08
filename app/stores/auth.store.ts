@@ -22,7 +22,6 @@ export const useAuthStore = defineStore("auth", () => {
     const [err, isValid] = await auth.status();
     if (err || isValid.error) return;
     
-    console.log(isValid);
     isLoggedIn.value = Boolean(isValid.data);
 
     return isLoggedIn.value;
