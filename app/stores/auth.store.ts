@@ -4,7 +4,7 @@ import { defineStore } from "pinia";
 
 
 export const useAuthStore = defineStore("auth", () => {
-  const auth = useAuth();
+  const auth = useAuthApi();
   const isLoggedIn = ref(false);
   const isInitialized = ref(false);
 

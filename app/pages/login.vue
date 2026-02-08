@@ -6,6 +6,8 @@ import { SLoginForm } from "~~/core";
 
 
 
+let loginRequest: ReturnType<typeof useAsyncData>;
+
 const form = useForm({
   defaultValues: { password: "" } as TLogin,
 
@@ -16,7 +18,7 @@ const form = useForm({
   },
 });
 
-const loginRequest = useAsyncData("login", () => useAuthApi().login(form.state.values.password), { immediate: false, server: false });
+loginRequest = useAsyncData("login", () => useAuthApi().login(form.state.values.password), { immediate: false, server: false });
 </script>
 
 <template>
