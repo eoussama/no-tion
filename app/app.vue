@@ -7,6 +7,7 @@ const auth = useAuthStore();
 
 function onLogout(): void {
   auth.logout();
+  navigateTo("/login");
 }
 </script>
 

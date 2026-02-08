@@ -6,7 +6,7 @@ import { useAuthStore } from "~/stores";
 
 const password = ref("");
 
-async function onLogin() {
+function onLogin() {
 	useAuthStore().login(password.value);
 }
 </script>
