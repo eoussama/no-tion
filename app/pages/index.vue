@@ -1,6 +1,6 @@
 <script setup lang="ts">
 async function onLogout(): Promise<void> {
-  useAuth().logout().catch().finally(() => navigateTo("/login"));
+  useAuth().logout().finally(() => navigateTo("/login"));
 }
 </script>
 
