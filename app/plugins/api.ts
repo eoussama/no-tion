@@ -7,6 +7,12 @@ export default defineNuxtPlugin(() => {
         baseURL: "/api",
         credentials: "include",
         headers,
+
+        async onResponseError({ response: { _data: data } }) {
+          if (data.error) {
+            alert(data.message);
+          }
+        }
       }),
     },
   };
