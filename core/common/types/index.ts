@@ -1,4 +1,3 @@
-export * from "./token.type";
 export * from "./response.type";
 export * from "./notion-user.type";
 export * from "./notion-database.type";
