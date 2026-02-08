@@ -1,8 +1,16 @@
-import { tryCatch, type TResponse } from "~~/core";
+import type { TResponse } from "~~/core";
+
+import { tryCatch } from "~~/core";
 
 
 
-export const useAuth = () => {
+/**
+ * @description
+ * A composable for handling authentication-related API calls (login, logout, status) with error handling using `tryCatch`.
+ *
+ * @returns An object containing methods for checking authentication status, logging in, and logging out.
+ */
+export function useAuth() {
   const base = "/auth";
   const { $apiFetch } = useNuxtApp();
 
@@ -10,5 +18,5 @@ export const useAuth = () => {
     status: async () => tryCatch(() => $apiFetch<TResponse<boolean>>(`${base}/status`, { method: "GET" })),
     logout: async () => tryCatch(() => $apiFetch<TResponse<boolean>>(`${base}/logout`, { method: "POST" })),
     login: async (password: string) => tryCatch(() => $apiFetch<TResponse<boolean>>(`${base}/login`, { method: "POST", body: { password } })),
-  }
+  };
 }

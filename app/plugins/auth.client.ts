@@ -6,7 +6,7 @@ export default defineNuxtPlugin(async () => {
     if (!isLoggedIn && route.path !== "/login") {
       return navigateTo("/login");
     }
-    
+
     if (isLoggedIn && route.path === "/login") {
       return navigateTo("/");
     }

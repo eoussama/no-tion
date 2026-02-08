@@ -9,9 +9,13 @@ export const useAuthStore = defineStore("auth", () => {
 
   async function login(password: string) {
     const [err, success] = await auth.login(password);
-    if (err || success.error) return false;
+
+    if (err || success.error) {
+      return false;
+    }
 
     isLoggedIn.value = true;
+
     return true;
   }
 
@@ -22,10 +26,10 @@ export const useAuthStore = defineStore("auth", () => {
 
   async function check() {
     const [err, isValid] = await auth.status();
-    
+
     isInitialized.value = true;
     isLoggedIn.value = (err || isValid?.error) ? false : Boolean(isValid.data);
-    
+
     return isLoggedIn.value;
   }
 
