@@ -3,19 +3,20 @@ import type { TLogin } from "~~/core";
 
 import { useForm } from "@tanstack/vue-form";
 import { SLoginForm } from "~~/core";
-import { useAuthStore } from "~/stores";
 
 
 
 const form = useForm({
   defaultValues: { password: "" } as TLogin,
 
-  onSubmit(values): void {
+  onSubmit: async (values): Promise<void> => {
     if (values.formApi.state.isValid) {
-      useAuthStore().login(values.value.password);
+      await loginRequest.execute();
     }
   },
 });
+
+const loginRequest = useAsyncData("login", () => useAuthApi().login(form.state.values.password), { immediate: false, server: false });
 </script>
 
 <template>
@@ -29,6 +30,7 @@ const form = useForm({
       >
         <template #default="{ field }">
           <input
+            type="password"
             :name="field.name"
             :value="field.state.value"
             @blur="field.handleBlur"

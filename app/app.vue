@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/stores";
-
-
-
 const auth = useAuthStore();
+const logoutRequest = useAsyncData("logout", () => useAuthApi().logout(), { immediate: false, server: false });
+const { pending } = logoutRequest;
 
 function onLogout(): void {
-  auth.logout();
-  navigateTo("/login");
+  logoutRequest.execute();
 }
 </script>
 
@@ -15,7 +12,7 @@ function onLogout(): void {
   <div class="app">
     <header>
       no-tion
-      <button v-if="auth.isLoggedIn" @click="onLogout">
+      <button v-if="auth.isLoggedIn" :disabled="pending" @click="onLogout">
         Logout
       </button>
       <hr>
