@@ -1,7 +1,7 @@
 import { createHmac, randomBytes } from "crypto";
 
 import { type TToken } from "~~/core";
-import { checkEquality } from "~~/server/utils";
+import { checkEquality } from "./check.util";
 
 
 
