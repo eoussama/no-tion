@@ -8,4 +8,7 @@ registerPage("Home", { href: "/" });
 
 <template>
   <p>Welcome to the home page!</p>
+  <NuxtLink to="/cinema-tv">
+    Cinema & TV
+  </NuxtLink>
 </template>
