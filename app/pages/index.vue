@@ -4,11 +4,15 @@ import { registerPage } from "~~/core";
 
 
 registerPage("Home", { href: "/" });
+const links = ["cinema-tv", "books", "music"];
 </script>
 
 <template>
   <p>Welcome to the home page!</p>
-  <NuxtLink to="/d/cinema-tv">
-    Cinema & TV
-  </NuxtLink>
+
+  <ul>
+    <li v-for="(link, index) in links" :key="index">
+      <NuxtLink :to="`/d/${link}`">{{ link }}</NuxtLink>
+    </li>
+  </ul>
 </template>
