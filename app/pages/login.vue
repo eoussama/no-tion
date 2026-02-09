@@ -2,16 +2,18 @@
 import type { TLogin } from "~~/core";
 
 import { useForm } from "@tanstack/vue-form";
-import { SLoginForm } from "~~/core";
+import { registerPage, SLoginForm } from "~~/core";
 
 
+
+registerPage("Login");
 
 const form = useForm({
   defaultValues: { password: "" } as TLogin,
 
   onSubmit: async (values): Promise<void> => {
     if (values.formApi.state.isValid) {
-      await useAuthApi().login(form.state.values.password)
+      await useAuthApi().login(form.state.values.password);
     }
   },
 });
