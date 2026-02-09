@@ -1,5 +1,7 @@
 import type { TUnsafe } from "@eoussama/core";
+import type { RouteRecordNameGeneric } from "vue-router";
 import type { TCrumb, TPage } from "../types";
+
 import { PAGES } from "../consts";
 
 
@@ -28,10 +30,9 @@ export function registerPage(title: string, crumb?: Partial<TCrumb>): void {
  * Retrieves the page information associated with the current route.
  * This includes the title and breadcrumb information that was registered using the `registerPage` function.
  *
+ * @param name - The name of the route for which to retrieve the page information. This is typically obtained from the current route's name.
  * @returns The page information associated with the current route, including title and breadcrumb details.
  */
-export function getPage(): TUnsafe<TPage> {
-  const route = useRoute();
-
-  return PAGES.get(route.name) as TUnsafe<TPage>;
+export function getPage(name: RouteRecordNameGeneric): TUnsafe<TPage> {
+  return PAGES.get(name) as TUnsafe<TPage>;
 }
