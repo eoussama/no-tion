@@ -5,6 +5,7 @@ import { defineConfig } from "./server";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
+  experimental: { typedPages: true },
 
   typescript: {
     typeCheck: true,
