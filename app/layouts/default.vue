@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import pkg from "~/../package.json";
 
+import Breadcrumb from "~/components/layout/Breadcrumb.vue";
+import Title from "~/components/layout/Title.vue";
+
 
 
 const auth = useAuthStore();
@@ -14,30 +17,23 @@ function onLogout(): void {
 </script>
 
 <template>
-  <header v-if="auth.isLoggedIn">
+  <header>
     no-tion
 
     <span title="The connected workspace - online">Workspace •</span>
 
     <a href="http://git.ouss.es/no-tion" target="_blank">{{ pkg.version }}</a>
 
-    <button :disabled="pending" @click="onLogout">
+    <button v-if="auth.isLoggedIn" :disabled="pending" @click="onLogout">
       Logout
     </button>
     <hr>
   </header>
 
   <main class="page">
-    <nav v-if="auth.isLoggedIn">
-      <ul>
-        <!-- <li v-for="(breadcrumb, index) in breadcrumbs" :key="index">
-          <NuxtLink v-if="index < breadcrumbs.length - 1" :to="breadcrumb.path">
-            {{ breadcrumb.name }}
-          </NuxtLink>
-          <span v-else>{{ breadcrumb.name }}</span>
-        </li> -->
-      </ul>
-    </nav>
+    <Breadcrumb />
+    <Title />
+
     <slot />
   </main>
 </template>
