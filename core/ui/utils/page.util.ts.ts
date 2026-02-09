@@ -13,8 +13,9 @@ import { PAGES } from "../consts";
  *
  * @param title - The title of the page, which will be displayed in the UI and used for breadcrumb generation.
  * @param crumb - Optional breadcrumb information, including a label and an href. If not provided, the label defaults to the title and the href is generated from the title.
+ * @param parent - Optional parent page information, which can be used to establish a hierarchy of pages for breadcrumb navigation. This should reference another page that has been registered using this function.
  */
-export function registerPage(title: string, crumb?: Partial<TCrumb>): void {
+export function registerPage(title: string, crumb?: Partial<TCrumb>, parent?: TPage["parent"]): void {
   const route = useRoute();
 
   const pageCrumb = {
@@ -22,7 +23,7 @@ export function registerPage(title: string, crumb?: Partial<TCrumb>): void {
     href: crumb?.href ?? title.toLocaleLowerCase().replace(/\s/g, "-"),
   } as TPage["crumb"];
 
-  PAGES.set(route.name, { title, crumb: pageCrumb });
+  PAGES.set(route.name, { title, crumb: pageCrumb, parent });
 }
 
 /**
