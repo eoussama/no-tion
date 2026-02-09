@@ -7,6 +7,7 @@ import { registerPage, SLoginForm } from "~~/core";
 
 
 registerPage("Login");
+definePageMeta({ layout: "none" });
 
 const form = useForm({
   defaultValues: { password: "" } as TLogin,
