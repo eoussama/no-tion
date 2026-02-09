@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-const title = ref<string>();
-
-onMounted(() => {
-  title.value = usePage()?.title!;
-});
+const title = computed(() => usePage()?.title ?? "");
 </script>
 
 <template>
