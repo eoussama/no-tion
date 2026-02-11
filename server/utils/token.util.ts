@@ -8,7 +8,7 @@ import { checkEquality } from "./check.util";
 
 
 
-function getExporationTime(): number {
+function getExpirationTime(): number {
   const now = Math.floor(Date.now() / 1000);
   const expiresIn = 60 * 60 * 2; // 2 hours
   const exp = now + expiresIn;
@@ -24,7 +24,7 @@ function isTokenExpired(token: TToken): boolean {
 
 function createToken(): TToken {
   return {
-    exp: getExporationTime(),
+    exp: getExpirationTime(),
     nonce: randomBytes(16).toString("hex"),
   };
 }
