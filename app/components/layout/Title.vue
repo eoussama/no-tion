@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-const title = computed(() => usePage()?.title ?? "");
+const page = usePage();
+const title = computed(() => page.value?.title ?? "");
 </script>
 
 <template>

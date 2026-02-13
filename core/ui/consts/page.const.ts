@@ -1,8 +1,15 @@
-import type { RouteRecordNameGeneric } from "vue-router";
 import type { TPage } from "../types";
 
-import { reactive } from "vue";
+import type { Ref } from "vue";
 
 
 
-export const PAGES: Map<RouteRecordNameGeneric, TPage> = reactive(new Map());
+/**
+ * @description
+ * Provides a shared, SSR-safe store for page registration data.
+ * Uses Nuxt's `useState` so the server-rendered state transfers
+ * to the client via the payload, preventing hydration mismatches.
+ */
+export function usePages(): Ref<Record<string, TPage>> {
+  return useState<Record<string, TPage>>("pages", () => ({}));
+}

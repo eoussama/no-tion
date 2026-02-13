@@ -1,22 +1,23 @@
 import type { TCrumb } from "~~/core";
 
-import { PAGES } from "~~/core";
+import { usePages } from "~~/core";
 
 
 
 export const useBreadcrumb = () => {
+  const page = usePage();
+  const pages = usePages();
+
   const crumbs = computed(() => {
-    const page = usePage();
-    
-    if (!page) {
+    if (!page.value) {
       return [];
     }
 
-    const result: Array<TCrumb> = [page.crumb];
-    let parentName = page.parent;
+    const result: Array<TCrumb> = [page.value.crumb];
+    let parentName = page.value.parent;
   
     while (parentName) {
-      const parentPage = PAGES.get(parentName);
+      const parentPage = pages.value[String(parentName)];
 
       if (!parentPage) {
         break;

@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { registerPage } from "~~/core";
+const { params } = useRoute();
 
+function getSlug(): string {
+  const page = (Array.isArray(params.slug) ? params.slug[0] : params.slug) ?? "";
+  return page;
+}
 
-
-registerPage("Detail", { href: "/:slug" }, "index");
-const page = useRoute().params.slug;
+const slug = getSlug();
 </script>
 
 <template>

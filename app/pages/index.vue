@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import { registerPage } from "~~/core";
-
-
-
-registerPage("Home", { href: "/" });
 const links = ["cinema-tv", "books", "music"];
 </script>
 

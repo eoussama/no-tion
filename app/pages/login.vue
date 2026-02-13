@@ -2,11 +2,7 @@
 import type { TLogin } from "~~/core";
 
 import { useForm } from "@tanstack/vue-form";
-import { registerPage, SLoginForm } from "~~/core";
-
-
-
-registerPage("Login");
+import { SLoginForm } from "~~/core";
 definePageMeta({ layout: "none" });
 
 const form = useForm({
