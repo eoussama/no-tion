@@ -8,7 +8,7 @@ export default defineNuxtPlugin(() => {
 
         async onResponseError({ response: { _data: data } }) {
           if (data.error) {
-            alert(data.message);
+            throw new Error(data.message);
           }
         },
       }),
