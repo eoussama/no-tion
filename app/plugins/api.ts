@@ -8,7 +8,13 @@ export default defineNuxtPlugin(() => {
 
         async onResponseError({ response: { _data: data } }) {
           if (data.error) {
+            if (data.statusCode === 401) {
+              useAuthStore().logout();
+              // TODO: show toast the user about the session expiration
+            }
+
             throw new Error(data.message);
+            // TODO: show toast of the error message to the user
           }
         },
       }),
