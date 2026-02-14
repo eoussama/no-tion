@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@eoussama/core": "^0.0.4",
+    "@notionhq/client": "^5.9.0",
     "@pinia/nuxt": "0.11.3",
     "@tanstack/vue-form": "^1.28.2",
     "nuxt": "^4.3.1",
