@@ -1,21 +1,44 @@
-import type { TUnsafe } from "@eoussama/core";
-import type { ComputedRef } from "vue";
-import type { TPage } from "~~/core";
-
-import { getPage } from "~~/core";
+import type { RouteRecordNameGeneric } from "vue-router";
+import type { TCrumb, TPage, TTitle } from "~~/core";
+import { capitalize } from "~~/core";
 
 
 
 /**
  * @description
- * A composable for retrieving the current page information based on the route name.
- * Captures `useRoute()` once at setup time and returns a computed ref,
- * so it never calls `useRoute()` during reactive re-evaluations.
+ * This composable provides a mechanism to register pages and retrieve the current page information based on the active route.
+ * It maintains a state of registered pages, allowing for dynamic page registration and retrieval of page details such as title and breadcrumb information.
  *
- * @returns A computed ref containing the current page information.
+ * @returns An object containing the `pages` state and the `registerPage` function for registering new pages.
  */
-export function usePage(): ComputedRef<TUnsafe<TPage>> {
-  const route = useRoute();
+export function usePages() {
+  const pages = useState<Record<string, TPage>>("pages", () => ({}));
 
-  return computed(() => getPage(route.name ?? route.path));
+  function registerPage(name: Omit<RouteRecordNameGeneric, "undefined">, title?: TTitle, crumb?: Partial<TCrumb>, parent?: TPage["parent"]): void {
+    const defaultTitle = title ?? capitalize(name.toString());
+    const evaluatedTitle = typeof defaultTitle === "function" ? defaultTitle() : defaultTitle;
+
+    const pageCrumb = {
+      label: crumb?.label ?? evaluatedTitle,
+      href: crumb?.href ?? evaluatedTitle.toLocaleLowerCase().replace(/\s/g, "-"),
+    } as TPage["crumb"];
+
+    pages.value[String(name)] = { title: evaluatedTitle, crumb: pageCrumb, parent };
+  }
+
+  return { pages, registerPage };
+}
+
+/**
+ * @description
+ * This composable retrieves the current page information based on the active route.
+ *
+ * @returns The page information associated with the current route, including title and breadcrumb details, as registered using the `registerPage` function.
+ */
+export function usePage() {
+  const route = useRoute();
+  const { pages } = usePages();
+  const page = computed(() => pages.value[(route.name ?? route.path) as string]);
+
+  return page;
 }

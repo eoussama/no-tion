@@ -1,15 +1,16 @@
-import { registerPageByName } from "~~/core";
+import { getSlug } from "~~/core";
 
 
 
 export default defineNuxtRouteMiddleware((to) => {
-  // Static pages
-  registerPageByName("index", "Home", { href: "/" });
-  registerPageByName("login", "Login", { href: "/login" });
+  const { registerPage } = usePages();
 
-  // Dynamic slug page
+  registerPage("index", "Home", { href: "/" });
+  registerPage("login", undefined, { href: "/login" });
+
   if (to.name === "d-slug") {
-    const slug = (Array.isArray(to.params.slug) ? to.params.slug[0] : to.params.slug) ?? "";
-    registerPageByName(to.name, `${slug.toUpperCase()} Detail`, { href: "/:slug", label: slug }, "index");
+    const slug = getSlug(to.params.slug);
+
+    registerPage(to.name, `${slug.toUpperCase()} Detail`, { href: "/:slug", label: slug }, "index");
   }
 });

@@ -1,14 +1,3 @@
-<script setup lang="ts">
-const { params } = useRoute();
-
-function getSlug(): string {
-  const page = (Array.isArray(params.slug) ? params.slug[0] : params.slug) ?? "";
-  return page;
-}
-
-const slug = getSlug();
-</script>
-
 <template>
   <NuxtLink to="/">
     Go to home

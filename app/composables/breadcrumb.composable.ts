@@ -1,12 +1,16 @@
 import type { TCrumb } from "~~/core";
 
-import { usePages } from "~~/core";
 
 
-
-export const useBreadcrumb = () => {
+/**
+ * @description
+ * A composable to generate breadcrumbs based on the current page and its parent pages.
+ *
+ * @returns An array of breadcrumb objects, each containing a label and an href.
+ */
+export function useBreadcrumb() {
+  const { pages } = usePages();
   const page = usePage();
-  const pages = usePages();
 
   const crumbs = computed(() => {
     if (!page.value) {
@@ -15,7 +19,7 @@ export const useBreadcrumb = () => {
 
     const result: Array<TCrumb> = [page.value.crumb];
     let parentName = page.value.parent;
-  
+
     while (parentName) {
       const parentPage = pages.value[String(parentName)];
 
@@ -26,7 +30,7 @@ export const useBreadcrumb = () => {
       result.unshift(parentPage.crumb);
       parentName = parentPage.parent;
     }
-  
+
     return result;
   });
 

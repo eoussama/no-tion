@@ -7,7 +7,9 @@ const links = ["cinema-tv", "books", "music"];
 
   <ul>
     <li v-for="(link, index) in links" :key="index">
-      <NuxtLink :to="`/d/${link}`">{{ link }}</NuxtLink>
+      <NuxtLink :to="`/d/${link}`">
+        {{ link }}
+      </NuxtLink>
     </li>
   </ul>
 </template>
