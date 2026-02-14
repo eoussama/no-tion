@@ -1,5 +1,7 @@
 import type { DatabaseObjectResponse } from "@notionhq/client";
-import { DATABASE_IDS, tryCatch, type TNotionDatabase } from "~~/core";
+import type { TNotionDatabase } from "~~/core";
+
+import { DATABASE_IDS, tryCatch } from "~~/core";
 import { definedProtectedRoute, getNotionClient } from "~~/server/utils";
 
 

@@ -5,7 +5,10 @@ import { defineConfig } from "./server";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  experimental: { typedPages: true },
+  experimental: {
+    typedPages: true,
+    payloadExtraction: true
+  },
 
   typescript: {
     typeCheck: true,
