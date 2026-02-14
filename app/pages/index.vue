@@ -1,15 +1,29 @@
 <script setup lang="ts">
-const links = ["cinema-tv", "books", "music"];
+import type { TNotionDatabase } from '~~/core';
+
+
+
+const res = useApiLazy<Array<TNotionDatabase>>("notion/databases");
 </script>
 
 <template>
   <p>Welcome to the home page!</p>
 
-  <ul>
-    <li v-for="(link, index) in links" :key="index">
-      <NuxtLink :to="`/d/${link}`">
-        {{ link }}
-      </NuxtLink>
-    </li>
-  </ul>
+  <div>
+    <p v-if="res?.pending.value" class="text-red-500">
+      Fetching databases...
+    </p>
+  
+    <p v-else-if="res?.error.value" class="text-red-500">
+      {{ res.error.value }}
+    </p>
+  
+    <ul v-else>
+      <li v-for="(db, index) in res?.data.value?.data" :key="index">
+        <NuxtLink :to="`/d/${db.id}`">
+          {{ db.title }}
+        </NuxtLink>
+      </li>
+    </ul>
+  </div>
 </template>
