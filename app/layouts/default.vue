@@ -3,6 +3,7 @@ import pkg from "~/../package.json";
 
 import Breadcrumb from "~/components/layout/Breadcrumb.vue";
 import Title from "~/components/layout/Title.vue";
+import Workspace from "~/components/layout/Workspace.vue";
 
 
 
@@ -20,7 +21,7 @@ function onLogout(): void {
   <header>
     no-tion
 
-    <span title="The connected workspace - online">Workspace •</span>
+    <Workspace />
 
     <a href="http://git.ouss.es/no-tion" target="_blank">{{ pkg.version }}</a>
 
