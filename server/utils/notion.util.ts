@@ -16,16 +16,16 @@ let NOTION_CLIENT: TNullable<Client> = null;
  * @returns {Client} An instance of the Notion client.
  * @throws {Error} If the Notion API key is not configured in the environment variables.
  */
-export function getNotionClient(): Client {
+export function getNotionClient(): Promise<Client> {
   if (!NOTION_CLIENT) {
     const notionApiKey = env.NUXT_NOTION_API_KEY;
 
     if (!notionApiKey) {
-      throw new Error("Notion API key is not configured.");
+      return Promise.reject(new Error("Notion API key is not configured."));
     }
 
     NOTION_CLIENT = new Client({ auth: notionApiKey });
   }
 
-  return NOTION_CLIENT;
+  return Promise.resolve(NOTION_CLIENT);
 }

@@ -1,10 +1,17 @@
 import type { TNotionWorkspace } from "~~/core";
+
+import { tryCatch } from "~~/core";
 import { definedProtectedRoute, getNotionClient } from "~~/server/utils";
 
 
 
 export default definedProtectedRoute(async (event) => {
-  const notionClient = getNotionClient();
+  const [err, notionClient] = await tryCatch(getNotionClient);
+
+  if (err) {
+    throw createError({ status: 501, message: "Unable to initialize Notion client", statusText: "Internal Server Error" });
+  }
+
   const me = await notionClient.users.me({});
 
   if (me.type !== "bot") {
