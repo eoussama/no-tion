@@ -9,7 +9,7 @@ import type { TResponse } from "~~/core";
  * @returns An object containing methods for checking authentication status, logging in, and logging out.
  */
 export function useAuthApi() {
-  const base = "/auth";
+  const base = "auth";
   const auth = useAuthStore();
   const { $apiFetch } = useNuxtApp();
 

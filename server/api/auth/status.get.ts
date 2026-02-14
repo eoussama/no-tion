@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const token = getCookie(event, "session");
 
   if (!token) {
-    return createResponse(event, false, { message: "Auth Status" });
+    return createResponse(event, false, { message: "Auth status" });
   }
 
   const [err, isValid] = await tryCatch(async () => verifyToken(token));
@@ -24,5 +24,5 @@ export default defineEventHandler(async (event) => {
     deleteCookie(event, "session");
   }
 
-  return createResponse(event, isValid, { message: "Auth Status" });
+  return createResponse(event, isValid, { message: "Auth status" });
 });

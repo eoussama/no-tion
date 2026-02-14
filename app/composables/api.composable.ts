@@ -8,7 +8,7 @@ import { tryCatch } from "~~/core";
  * @description
  * A composable for making API requests with error handling using `tryCatch`.
  *
- * @param endpoint - The API endpoint to call (e.g., "/api/auth/login").
+ * @param endpoint - The API endpoint to call (e.g., "auth/login").
  * @param body - Optional request body to send with the API call.
  * @returns A tuple of [error, data] where error is any error that occurred and data is the response data.
  */
