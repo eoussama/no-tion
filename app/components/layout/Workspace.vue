@@ -9,7 +9,7 @@ const res = useApiLazy<TNotionWorkspace>("notion/workspace");
 <template>
   <div>
     <p v-if="res?.pending.value" class="text-red-500">
-      Fetching...
+      Fetching workspace...
     </p>
 
     <p v-else-if="res?.error.value" class="text-red-500">
