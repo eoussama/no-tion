@@ -6,13 +6,7 @@ import type { TNotionUser } from "./notion-user.type";
 
 
 export type TNotionWorkspace = {
-  name: string;
-  icon?: string;
-};
-
-export type TNotionWorkspaceData = {
-  user: TNullable<TNotionUser>;
-  databases: Array<TNotionDatabase>;
-  workspace: TNullable<TNotionWorkspace>;
-  failedDatabases: Array<TFailedNotionDatabase>;
+  id?: string;
+  name?: string;
+  connected: boolean;
 };
