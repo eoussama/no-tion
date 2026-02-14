@@ -3,15 +3,15 @@ import type { TNotionWorkspace } from "~~/core";
 
 
 
-const [_, res] = await useApi<TNotionWorkspace>("notion/workspace");
+const res = useApiLazy<TNotionWorkspace>("notion/workspace");
 </script>
 
 <template>
-  <div title="The connected workspace">
+  <div>
     <p v-if="res?.pending.value" class="text-red-500">
       Fetching...
     </p>
-    
+
     <p v-else-if="res?.error.value" class="text-red-500">
       {{ res.error.value }}
     </p>
