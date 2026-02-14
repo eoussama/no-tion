@@ -1,11 +1,23 @@
 <script lang="ts" setup>
-const [err, res] = await useApi("notion/workspace");
+import type { TNotionWorkspace } from "~~/core";
 
-console.log({ err, res });
+
+
+const [_, res] = await useApi<TNotionWorkspace>("notion/workspace");
 </script>
 
 <template>
   <div title="The connected workspace">
-    Workspace
+    <p v-if="res?.pending.value" class="text-red-500">
+      Fetching...
+    </p>
+    
+    <p v-else-if="res?.error.value" class="text-red-500">
+      {{ res.error.value }}
+    </p>
+
+    <p v-else :title="res?.data.value?.data?.connected ? 'online' : 'offline'">
+      {{ res?.data.value?.data?.name }}
+    </p>
   </div>
 </template>
