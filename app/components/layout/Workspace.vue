@@ -3,7 +3,7 @@ import type { TNotionWorkspace } from "~~/core";
 
 
 
-const res = useApiLazy<TNotionWorkspace>("notion/workspace");
+const res = useApiLazy<TNotionWorkspace>("notion/workspace/info");
 </script>
 
 <template>
