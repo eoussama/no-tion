@@ -4,7 +4,7 @@ import type { TNotionDatabase } from "~~/core";
 
 
 const id = useRoute().params.id;
-const res = useApiLazy<Array<TNotionDatabase>>(`notion/database/${id}`);
+const res = useApiLazy<TNotionDatabase>(`notion/database/${id}`);
 </script>
 
 <template>
@@ -19,8 +19,8 @@ const res = useApiLazy<Array<TNotionDatabase>>(`notion/database/${id}`);
       {{ res.error.value }}
     </p>
 
-    <p v-else>
+    <code v-else>
       {{ res?.data.value?.data }}
-    </p>
+    </code>
   </div>
 </template>
