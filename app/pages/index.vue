@@ -3,7 +3,7 @@ import type { TNotionDatabase } from "~~/core";
 
 
 
-const res = useApiLazy<Array<TNotionDatabase>>("notion/databases");
+const res = useApiLazy<Array<TNotionDatabase>>("notion/database/all");
 </script>
 
 <template>
