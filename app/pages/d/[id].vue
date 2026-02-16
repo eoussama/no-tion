@@ -1,12 +1,9 @@
 <script lang="ts" setup>
-const id = useRoute().params.slug;
+const id = useRoute().params.id;
 </script>
 
 <template>
-  <p>
-    <NuxtLink to="/">&lt; Go to home</NuxtLink> - Associated ID: <b>{{ id }}</b>
-  </p>
-
+  <p>Associated ID: <b>{{ id }}</b></p>
   <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eveniet quasi doloremque id labore molestias odio voluptate dolorum, saepe, quidem omnis consectetur quod quibusdam. Dolor dolores id corrupti recusandae repellat cumque.</p>
   <p>Possimus culpa est explicabo ipsam, sunt nihil mollitia exercitationem, id numquam assumenda cupiditate dolorem facere soluta dicta! Ratione aspernatur molestias cupiditate suscipit dicta eum rerum nesciunt odit optio mollitia. Eveniet.</p>
   <p>Nulla quae voluptatibus nobis aperiam atque, enim officia. Esse vitae minima laboriosam eius voluptatum et reiciendis praesentium labore vel iusto id magnam nemo quo natus omnis ratione quod, at saepe.</p>

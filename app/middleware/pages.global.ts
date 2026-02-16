@@ -1,12 +1,12 @@
-import { getSlug } from "~~/core";
+import { getId } from "~~/core";
 
 
 
 export default defineNuxtRouteMiddleware((to) => {
-  if (to.name === "d-slug") {
+  if (to.name === "d-id") {
     const { registerPage } = usePages();
-    const slug = getSlug(to.params.slug);
+    const id = getId(to.params.id);
 
-    registerPage(to.name, `${slug.toUpperCase()} Detail`, { href: "/:slug", label: slug }, "index");
+    registerPage(to.name, `${id.toUpperCase()} Detail`, { href: "/:id", label: id }, "index");
   }
 });
