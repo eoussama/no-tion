@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const crumbs = useBreadcrumb();
+const { crumbs, lazy } = useBreadcrumb();
 </script>
 
 <template>
@@ -9,7 +9,15 @@ const crumbs = useBreadcrumb();
         <NuxtLink v-if="crumb.href && index < crumbs.length - 1" :to="crumb.href">
           {{ crumb.label }}
         </NuxtLink>
-        <span v-else>{{ crumb.label }}</span>
+
+        <span v-else>
+          <template v-if="lazy">
+            Loading crumb...
+          </template>
+          <template v-else>
+            {{ crumb.label }}
+          </template>
+        </span>
       </li>
     </ol>
   </nav>

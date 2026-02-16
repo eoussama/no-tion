@@ -3,8 +3,16 @@ import type { TNotionDatabase } from "~~/core";
 
 
 
-const id = useRoute().params.id;
+const { name } = useRoute();
+const { updatePage } = usePages();
+
+const id = useRoute().params.id as string;
 const res = useApiLazy<TNotionDatabase>(`notion/database/${id}`);
+
+res.then(e => {
+  const title = e.data.value?.data?.title ?? id ?? "Unknown Database";
+  updatePage(name as string, { title, crumb: { label: title }, lazy: false });
+});
 </script>
 
 <template>

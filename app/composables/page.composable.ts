@@ -1,5 +1,6 @@
 import type { RouteRecordNameGeneric } from "vue-router";
 import type { TCrumb, TPage, TTitle } from "~~/core";
+
 import { capitalize } from "~~/core";
 
 
@@ -14,7 +15,7 @@ import { capitalize } from "~~/core";
 export function usePages() {
   const pages = useState<Record<string, TPage>>("pages", () => ({}));
 
-  function registerPage(name: Omit<RouteRecordNameGeneric, "undefined">, title?: TTitle, crumb?: Partial<TCrumb>, parent?: TPage["parent"]): void {
+  function registerPage(name: Omit<RouteRecordNameGeneric, "undefined">, title?: TTitle, crumb?: Partial<TCrumb>, parent?: TPage["parent"], lazy?: boolean): void {
     const defaultTitle = title ?? capitalize(name.toString());
     const evaluatedTitle = typeof defaultTitle === "function" ? defaultTitle() : defaultTitle;
 
@@ -23,10 +24,25 @@ export function usePages() {
       href: crumb?.href ?? evaluatedTitle.toLocaleLowerCase().replace(/\s/g, "-"),
     } as TPage["crumb"];
 
-    pages.value[String(name)] = { title: evaluatedTitle, crumb: pageCrumb, parent };
+    pages.value[String(name)] = { title: evaluatedTitle, crumb: pageCrumb, parent, lazy };
   }
 
-  return { pages, registerPage };
+  function updatePage(name: Omit<RouteRecordNameGeneric, "undefined">, updates: Partial<TPage>): void {
+    const pageKey = String(name);
+    const currentPage = pages.value[pageKey];
+
+    if (!currentPage) {
+      throw new Error(`Page with name "${name}" is not registered.`);
+    }
+
+    pages.value[pageKey] = {
+      ...currentPage,
+      ...updates,
+      title: updates.title ?? currentPage.title,
+    };
+  }
+
+  return { pages, registerPage, updatePage };
 }
 
 /**

@@ -7,6 +7,6 @@ export default defineNuxtRouteMiddleware((to) => {
     const { registerPage } = usePages();
     const id = getId(to.params.id);
 
-    registerPage(to.name, `${id.toUpperCase()} Detail`, { href: "/:id", label: id }, "index");
+    registerPage(to.name, `${id.toUpperCase()} Detail`, { href: "/:id", label: id }, "index", true);
   }
 });

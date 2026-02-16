@@ -34,5 +34,7 @@ export function useBreadcrumb() {
     return result;
   });
 
-  return crumbs;
+  const lazy = computed(() => page.value?.lazy ?? false);
+
+  return { crumbs, lazy };
 }
