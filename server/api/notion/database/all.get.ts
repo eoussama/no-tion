@@ -1,6 +1,3 @@
-import type { DatabaseObjectResponse } from "@notionhq/client";
-import type { TNotionDatabase } from "~~/core";
-
 import { DATABASE_IDS, tryCatch } from "~~/core";
 import { definedProtectedRoute, getNotionClient } from "~~/server/utils";
 
@@ -16,16 +13,13 @@ export default definedProtectedRoute(async (event) => {
   const databases = [];
 
   for (const dbId of Object.values(DATABASE_IDS)) {
-    const db = await notionClient.databases.retrieve({ database_id: dbId }) as DatabaseObjectResponse;
+    const [dbErr, database] = await tryCatch(() => getNotionDatabase(notionClient, dbId));
 
-    if (db.object === "database") {
-      databases.push({
-        id: db.id,
-        url: db.url,
-        lastEditedTime: db.last_edited_time,
-        title: db.title[0]?.plain_text ?? "",
-      } as TNotionDatabase);
+    if (dbErr) {
+      throw createError({ status: 404, message: dbErr.message, statusText: "Not Found" });
     }
+
+    databases.push(database);
   }
 
   return createResponse(event, databases, { message: "Notion databases" });
