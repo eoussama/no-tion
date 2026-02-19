@@ -1,2 +1,3 @@
-export * from "./imdb-search-response.type";
-export * from "./imdb-title.types";
+export * from "./cinema-tv-row.type";
+export * from "./genre.type";
+export * from "./type.type";
