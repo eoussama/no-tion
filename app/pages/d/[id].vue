@@ -24,8 +24,12 @@ res.then((e) => {
       {{ res.error.value }}
     </p>
 
-    <code v-else>
-      {{ res?.data.value?.data }}
-    </code>
+    <ul v-else>
+      <li v-for="row in res?.data.value?.data?.rows" :key="row.id">
+        <a :href="row.url" target="_blank" class="text-blue-500 hover:underline">
+          {{ row.title }}
+        </a>
+      </li>
+    </ul>
   </div>
 </template>
