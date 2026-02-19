@@ -13,7 +13,7 @@ export default definedProtectedRoute(async (event) => {
   const databases = [];
 
   for (const dbId of Object.values(DATABASE_IDS)) {
-    const [dbErr, database] = await tryCatch(() => getNotionDatabase(notionClient, dbId));
+    const [dbErr, database] = await tryCatch(() => getNotionDatabase(notionClient, dbId, false));
 
     if (dbErr) {
       throw createError({ status: 404, message: dbErr.message, statusText: "Not Found" });
