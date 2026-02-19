@@ -1,6 +1,6 @@
+import type { TNullable } from "@eoussama/core";
 import type { PageObjectResponse } from "@notionhq/client";
 import type { TCinemaTvColumnNotionProperties } from "./cinema-tv-column-notion-properties.type";
-import type { TNullable } from "@eoussama/core";
 
 
 
