@@ -85,16 +85,16 @@ export async function getNotionDatabase<T>(client: Client, id: string, fetchRows
     throw new Error("Database not found");
   }
 
-  const database = {
-    rows: [],
+  const database: TNotionDatabase<T> = {
     id: dbRes.id,
     url: dbRes.url,
+    rows: [] as never,
     lastEditedTime: dbRes.last_edited_time,
     title: dbRes.title[0]?.plain_text ?? "",
-  } as TNotionDatabase<T>;
+  };
 
   if (fetchRows) {
-    database.rows = await getNotionDatabaseRows(client, database, dbRes);
+    database.rows = await getNotionDatabaseRows(client, database, dbRes) as TNotionDatabase<T>["rows"];
   }
 
   return database;

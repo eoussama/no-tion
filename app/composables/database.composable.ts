@@ -1,4 +1,4 @@
-import type { TCinemaTvDatabase, TNotionDatabase } from "~~/core";
+import type { TCinemaTvDatabase, TNotionDatabase, TResponse } from "~~/core";
 
 import { DATABASE_IDS, transformCinemaTv } from "~~/core";
 
@@ -15,6 +15,6 @@ export function useDatabaseApi() {
 
   return {
     all: () => useApiLazy<Array<TNotionDatabase>>(`${base}/all`),
-    getCinemaTv: () => useApiLazy<TCinemaTvDatabase>(`${base}/${DATABASE_IDS.CINEMA_TV}`, undefined, { transform: transformCinemaTv }),
+    getCinemaTv: () => useApiLazy<TCinemaTvDatabase>(`${base}/${DATABASE_IDS.CINEMA_TV}`, undefined, { transform: transformCinemaTv as unknown as (r: TResponse<TCinemaTvDatabase>) => TResponse<TCinemaTvDatabase> }),
   };
 }
