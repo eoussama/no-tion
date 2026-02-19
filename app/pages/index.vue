@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { TNotionDatabase } from "~~/core";
+import { useDatabaseApi } from "~/composables/database.composable";
 
 
 
-const res = useApiLazy<Array<TNotionDatabase>>("notion/database/all");
+const res = useDatabaseApi().all();
 </script>
 
 <template>

@@ -1,13 +1,9 @@
 <script lang="ts" setup>
-import type { TNotionDatabase } from "~~/core";
-
-
-
 const { name } = useRoute();
 const { updatePage } = usePages();
 
 const id = useRoute().params.id as string;
-const res = useApiLazy<TNotionDatabase>(`notion/database/${id}`);
+const res = useDatabaseApi().getCinemaTv();
 
 res.then((e) => {
   const title = e.data.value?.data?.title ?? id ?? "Unknown Database";
