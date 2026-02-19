@@ -1,7 +1,7 @@
-export type TNotionDatabase<T> = {
+export type TNotionDatabase<TRow = never> = {
   id: string;
   url: string;
   title: string;
-  rows: Array<T>;
   lastEditedTime: string;
+  rows: TRow extends never ? readonly [] : Array<TRow>;
 };
