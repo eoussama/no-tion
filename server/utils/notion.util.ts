@@ -1,4 +1,4 @@
-import type { TNullable } from "@eoussama/core";
+import type { TNullable, TUnsafe } from "@eoussama/core";
 import type { DatabaseObjectResponse } from "@notionhq/client";
 import type { TNotionDatabase } from "~~/core/common/types";
 
@@ -9,6 +9,39 @@ import { Client } from "@notionhq/client";
 
 
 let NOTION_CLIENT: TNullable<Client> = null;
+
+function getNotionDataSourceId<T>(database: TNotionDatabase<T>, databaseResult: DatabaseObjectResponse): string {
+  const dataSource = databaseResult.data_sources?.find(ds => ds.name === database.title);
+
+  if (!dataSource) {
+    throw new Error("Data source not found for the database");
+  }
+
+  return dataSource.id;
+}
+
+async function getNotionDatabaseRows<T>(client: Client, database: TNotionDatabase<T>, databaseResult: DatabaseObjectResponse): Promise<Array<T>> {
+  const rows: Array<T> = [];
+
+  let hasMore = true;
+  let cursor: Exclude<TUnsafe<string>, null>;
+
+  while (hasMore) {
+    const dataSourceId = getNotionDataSourceId(database, databaseResult);
+    const [errQuery, res] = await tryCatch(() => client.dataSources.query({ data_source_id: dataSourceId, start_cursor: cursor }));
+
+    if (errQuery) {
+      throw new Error("Failed to retrieve database content");
+    }
+
+    rows.push(...(res.results as Array<T>));
+
+    hasMore = res.has_more;
+    cursor = res.next_cursor ?? undefined;
+  }
+
+  return rows;
+}
 
 /**
  * @description
@@ -39,22 +72,28 @@ export function getNotionClient(): Promise<Client> {
  *
  * @param client The Notion client instance to use for the request.
  * @param id The ID of the Notion database to retrieve.
+ * @param fetchRows A boolean flag indicating whether to fetch the database rows (content). Defaults to true.
  * @returns A promise that resolves to the Notion database information, including id, url, last edited time, and title.
  * @throws {Error} If the database is not found or if there is an error during retrieval.
  */
-export async function getNotionDatabase(client: Client, id: string) {
-  const [errNotion, db] = await tryCatch(() => client.databases.retrieve({ database_id: id }) as Promise<DatabaseObjectResponse>);
+export async function getNotionDatabase<T>(client: Client, id: string, fetchRows: boolean = true) {
+  const [errNotion, dbRes] = await tryCatch(() => client.databases.retrieve({ database_id: id }) as Promise<DatabaseObjectResponse>);
 
-  if (errNotion || db.object !== "database") {
+  if (errNotion || dbRes.object !== "database") {
     throw new Error("Database not found");
   }
 
   const database = {
-    id: db.id,
-    url: db.url,
-    lastEditedTime: db.last_edited_time,
-    title: db.title[0]?.plain_text ?? "",
-  } as TNotionDatabase;
+    rows: [],
+    id: dbRes.id,
+    url: dbRes.url,
+    lastEditedTime: dbRes.last_edited_time,
+    title: dbRes.title[0]?.plain_text ?? "",
+  } as TNotionDatabase<T>;
+
+  if (fetchRows) {
+    database.rows = await getNotionDatabaseRows(client, database, dbRes);
+  }
 
   return database;
 }
