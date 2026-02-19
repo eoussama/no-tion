@@ -17,6 +17,7 @@ export function transformCinemaTv(response: TTransformCinemaTvInput): TTransform
   if (!response || response.error || !response.data) {
     return response as unknown as TTransformCinemaTvOutput;
   }
+
   const rows = response.data.rows.map((row) => {
     return {
       id: row.id,
@@ -25,7 +26,7 @@ export function transformCinemaTv(response: TTransformCinemaTvInput): TTransform
       title: row.properties.Name.title[0]?.plain_text ?? "",
       type: (row.properties.Type.select?.name as TType) ?? "Other",
       genre: (row.properties.Genre.select?.name as TGenre) ?? "Other",
-      franchise: row.properties.Franchises.multi_select[0]?.name ?? "TODO",
+      franchises: row.properties.Franchises.multi_select.map(franchise => franchise.name) ?? [],
     } satisfies TCinemaTvDatabase["rows"][number];
   });
 

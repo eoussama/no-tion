@@ -29,6 +29,10 @@ res.then((e) => {
         <a :href="row.url" target="_blank" class="text-blue-500 hover:underline">
           {{ row.title }}
         </a>
+
+        <small class="text-sm text-gray-500">
+          Type: {{ row.type }} | Genre: {{ row.genre }} | Franchises: {{ row.franchises.join(", ") }}
+        </small>
       </li>
     </ul>
   </div>

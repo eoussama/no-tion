@@ -7,7 +7,7 @@ export type TCinemaTvRowColumn = {
   url: string;
   title: string;
   poster: string;
-  franchise: string;
+  franchises: Array<string>;
 
   type: TType;
   genre: TGenre;
