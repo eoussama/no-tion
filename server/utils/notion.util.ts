@@ -35,6 +35,7 @@ async function getNotionDatabaseRows<T>(client: Client, database: TNotionDatabas
     }
 
     const pages: Array<PageObjectResponse> = res.results.filter((result): result is PageObjectResponse => result.object === "page" && "created_time" in result);
+
     rows.push(...(pages as Array<T>));
 
     hasMore = res.has_more;
