@@ -1,18 +1,27 @@
-import { tryCatch } from "~~/core";
+import type { ZodError } from "zod";
+import type { TDatabaseId } from "~~/core";
+
+import { SDatabaseId, tryCatch } from "~~/core";
 import { definedProtectedRoute, getNotionClient } from "~~/server/utils";
 
 
 
 export default definedProtectedRoute(async (event) => {
-  const id = event.context.params?.id as string;
+  const id = event.context.params?.id as TDatabaseId;
+  const [zodErr] = await tryCatch(async () => SDatabaseId.parse(id));
 
-  if (!id) {
-    throw createError({ status: 400, message: "Database ID is required", statusText: "Bad Request" });
+  if (zodErr) {
+    const err = (zodErr as ZodError).issues?.[0];
+    const message = err?.message ?? zodErr.message;
+    const errCode = err?.code === "custom" ? 403 : 400;
+    const statusText = err?.code === "custom" ? "Forbidden" : "Bad Request";
+
+    throw createError({ status: errCode, message, statusText });
   }
 
-  const [err, notionClient] = await tryCatch(getNotionClient);
+  const [notionErr, notionClient] = await tryCatch(getNotionClient);
 
-  if (err) {
+  if (notionErr) {
     throw createError({ status: 501, message: "Unable to initialize Notion client", statusText: "Internal Server Error" });
   }
 
