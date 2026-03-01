@@ -32,10 +32,12 @@
   "dependencies": {
     "@eoussama/core": "^0.0.4",
     "@notionhq/client": "^5.9.0",
+    "@nuxt/ui": "^4.5.0",
     "@pinia/nuxt": "0.11.3",
     "@tanstack/vue-form": "^1.28.2",
     "nuxt": "^4.3.1",
     "pinia": "^3.0.4",
+    "tailwindcss": "^4.2.1",
     "vue": "^3.5.28",
     "vue-router": "^5.0.2",
     "zod": "^4.3.6"
