@@ -4,10 +4,21 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "Nuxtr.nuxt-vscode-extentions"
+        "Nuxtr.nuxt-vscode-extentions",
+        "bradlc.vscode-tailwindcss"
       ],
       "settings": {
-        "editor.tabSize": 2
+        "editor.tabSize": 2,
+        "files.associations": {
+          "*.css": "tailwindcss"
+        },
+        "editor.quickSuggestions": {
+          "strings": "on"
+        },
+        "tailwindCSS.classAttributes": ["class", "ui"],
+        "tailwindCSS.experimental.classRegex": [
+          ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+        ]
       }
     }
   },
