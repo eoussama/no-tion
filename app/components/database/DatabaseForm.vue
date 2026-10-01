@@ -156,7 +156,12 @@ function lockedText(field: TFieldDef): string {
   return Array.isArray(value) ? value.join(", ") : value === null || value === undefined ? "" : String(value);
 }
 
-/** URL-like locked fields get a trailing "open link" button. */
+/**
+ * URL-like locked fields get a trailing "open link" button.
+ *
+ * @param field - The field definition.
+ * @returns Whether the locked value is a link to show a button for.
+ */
 function hasLockedLink(field: TFieldDef): boolean {
   return (field.kind === "url" || field.kind === "cover") && /^https?:\/\//.test(lockedText(field));
 }

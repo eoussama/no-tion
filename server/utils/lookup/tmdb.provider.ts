@@ -99,6 +99,7 @@ export function firstReleaseDate(result: TTmdbSearchResult, details?: TNullable<
  *
  * @param result - The TMDB search result.
  * @param imdbId - The IMDb id from `external_ids`, if any.
+ * @param releaseDate - The first ever release (`YYYY-MM-DD`); defaults to the search result's own date.
  * @returns The lookup result.
  */
 export function mapTmdbResult(result: TTmdbSearchResult, imdbId: TNullable<string>, releaseDate: TNullable<string> = firstReleaseDate(result)): TLookupResult {
