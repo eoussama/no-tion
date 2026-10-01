@@ -1,40 +1,70 @@
 <script lang="ts" setup>
-import pkg from "~/../package.json";
-
-import Breadcrumb from "~/components/layout/Breadcrumb.vue";
-import Title from "~/components/layout/Title.vue";
-import Workspace from "~/components/layout/Workspace.vue";
-
-
-
 const auth = useAuthStore();
 
-const logoutRequest = useAsyncData("logout", () => useAuthApi().logout(), { immediate: false, server: false });
-const { pending } = logoutRequest;
+const searchOpen = ref(false);
+const loggingOut = ref(false);
 
-function onLogout(): void {
-  logoutRequest.execute();
+async function onLogout(): Promise<void> {
+  if (loggingOut.value) {
+    return;
+  }
+
+  loggingOut.value = true;
+
+  try {
+    await auth.logout();
+  }
+  finally {
+    loggingOut.value = false;
+  }
 }
 </script>
 
 <template>
-  <header>
-    no-tion
+  <UDashboardGroup unit="px" storage="local" storage-key="no-tion">
+    <UDashboardSidebar
+      id="sidebar"
+      collapsible
+      resizable
+      mode="slideover"
+      :default-size="240"
+      :min-size="200"
+      :max-size="360"
+      :collapsed-size="56"
+    >
+      <template #header="{ collapsed }">
+        <Workspace :collapsed="collapsed" @logout="onLogout" />
+      </template>
 
-    <Workspace />
+      <template #default="{ collapsed }">
+        <SidebarNav :collapsed="collapsed" @search="searchOpen = true" />
+        <SidebarSettings :collapsed="collapsed" />
+      </template>
 
-    <a href="http://git.ouss.es/no-tion" target="_blank">{{ pkg.version }}</a>
+      <template #footer="{ collapsed }">
+        <SidebarFooter :collapsed="collapsed" />
+      </template>
+    </UDashboardSidebar>
 
-    <button v-if="auth.isLoggedIn" :disabled="pending" @click="onLogout">
-      Logout
-    </button>
-    <hr>
-  </header>
+    <UDashboardPanel id="main">
+      <template #header>
+        <UDashboardNavbar :toggle="{ color: 'neutral', variant: 'ghost', size: 'sm' }">
+          <template #left>
+            <UDashboardSidebarCollapse color="neutral" variant="ghost" size="sm" class="hidden text-muted lg:inline-flex" />
+            <Breadcrumb />
+          </template>
 
-  <main class="page">
-    <Breadcrumb />
-    <Title />
+          <template #right>
+            <div id="navbar-actions" class="flex items-center gap-1" />
+          </template>
+        </UDashboardNavbar>
+      </template>
 
-    <slot />
-  </main>
+      <template #body>
+        <slot />
+      </template>
+    </UDashboardPanel>
+
+    <AppSearch v-model:open="searchOpen" />
+  </UDashboardGroup>
 </template>

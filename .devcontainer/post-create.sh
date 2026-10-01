@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# The Nuxt config validates env vars at install time (postinstall -> nuxt prepare),
-# so a missing or too-short NUXT_SECRET would make `pnpm i` fail.
+# Env vars are validated when the server starts (server/plugins/env.ts), not at install time,
+# so `pnpm i` works without a .env. Bootstrap one so `pnpm dev` works once the values are filled in.
 if [ ! -f .env ]; then
   cp .env.example .env
   sed -i "s|^NUXT_SECRET=.*|NUXT_SECRET=$(openssl rand -hex 32)|" .env

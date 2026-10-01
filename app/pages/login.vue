@@ -2,93 +2,121 @@
 import type { TLogin } from "~~/core";
 
 import { useForm } from "@tanstack/vue-form";
-import { SLoginForm } from "~~/core";
+import { SLoginForm, tryCatch } from "~~/core";
+import AppField from "~/components/form/AppField.vue";
 import { version } from "../../package.json";
 
 
 
 definePageMeta({ layout: "none" });
+useHead({ title: "Log in" });
+
+const auth = useAuthStore();
+const colorMode = useColorMode();
+const loginError = ref<string | null>(null);
+const reveal = ref(false);
 
 const form = useForm({
   defaultValues: { password: "" } satisfies TLogin,
 
-  onSubmit: async (values): Promise<void> => {
-    if (values.formApi.state.isValid) {
-      await useAuthApi().login(form.state.values.password);
+  onSubmit: async ({ value, formApi }): Promise<void> => {
+    if (!formApi.state.isValid) {
+      return;
     }
+
+    loginError.value = null;
+
+    const [err] = await tryCatch(() => auth.login(value.password));
+
+    if (err) {
+      loginError.value = getErrorMessage(err, "Unable to sign in");
+
+      return;
+    }
+
+    await navigateTo("/");
   },
 });
+
+const isDark = computed(() => colorMode.value === "dark");
+
+function toggleColorMode(): void {
+  colorMode.preference = isDark.value ? "light" : "dark";
+}
 </script>
 
 <template>
-  <div class="flex items-center justify-center h-screen">
-    <UCard variant="subtle" class="w-full max-w-90">
-      <template #header>
-        <div class="flex items-center justify-center my-6">
-          <img src="/logo.png" alt="Logo" class="w-20 h-20 mb-4 rounded-lg m-0!">
-        </div>
-      </template>
+  <div class="relative flex min-h-svh flex-col items-center justify-center bg-default px-4 py-16 text-default">
+    <UButton
+      color="neutral"
+      variant="ghost"
+      class="absolute end-4 top-3.5 text-muted"
+      :icon="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"
+      :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+      @click="toggleColorMode"
+    />
 
-      <div class="flex items-center justify-center">
-        <UForm
-          class="w-full"
-          @submit.prevent.stop="form.handleSubmit"
-        >
-          <form.Field
-            name="password"
-            :validators="{ onChange: SLoginForm.shape.password }"
+    <form class="flex w-full max-w-80 flex-col" novalidate @submit.prevent.stop="form.handleSubmit">
+      <img src="/logo.png" alt="no-tion" class="size-16 self-center rounded-[14px] object-cover shadow-[0_0_0_1px_var(--ui-border),0_2px_6px_rgba(15,15,15,0.08)]">
+
+      <h1 class="mt-6 mb-1.5 text-center text-[22px] leading-snug font-bold">
+        Log in to no-tion
+      </h1>
+      <p class="mb-7 text-center text-muted">
+        This instance is private. Enter its password.
+      </p>
+
+      <form.Field name="password" :validators="{ onChange: SLoginForm.shape.password }">
+        <template #default="{ field }">
+          <AppField
+            :field="field"
+            :type="reveal ? 'text' : 'password'"
+            size="lg"
+            label="Password"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            autofocus
           >
-            <template #default="{ field }">
-              <UFormField
-                required
-                label="Password"
-                class="mb-4 w-full"
-                :error="field.state.meta.errors[0]?.message"
-              >
-                <UInput
-                  size="xl"
-                  class="w-full"
-                  type="password"
-                  placeholder="Enter instance password"
-                  :name="field.name"
-                  :value="field.state.value"
-                  @blur="field.handleBlur"
-                  @input="(e: InputEvent) => field.handleChange((e.target as HTMLInputElement).value)"
-                />
-              </UFormField>
-            </template>
-          </form.Field>
-
-          <form.Subscribe>
-            <template #default="{ canSubmit, isSubmitting }">
+            <template #trailing>
               <UButton
-                block
-                size="xl"
-                type="submit"
-                icon="i-lucide-log-in"
-                :disabled="!canSubmit"
-                :loading="isSubmitting"
-                :label="isSubmitting ? 'Signing In' : 'Sign In'"
+                color="neutral"
+                variant="ghost"
+                size="sm"
+                class="text-muted"
+                :icon="reveal ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                :aria-label="reveal ? 'Hide password' : 'Show password'"
+                :aria-pressed="reveal"
+                @click="reveal = !reveal"
               />
             </template>
-          </form.Subscribe>
-        </UForm>
-      </div>
+          </AppField>
+        </template>
+      </form.Field>
 
-      <template #footer>
-        <UButton
-          block
-          variant="link"
-          target="_blank"
-          icon="i-lucide-github"
-          to="http://git.ouss.es/no-tion"
-        >
-          View on GitHub
-          <UBadge variant="soft">
-            {{ version }}
-          </UBadge>
-        </UButton>
-      </template>
-    </UCard>
+      <p v-if="loginError" role="alert" class="mt-3 flex items-center gap-2 rounded-md bg-tag-red px-2.5 py-2 text-[13px] text-tag-text">
+        <UIcon name="i-lucide-circle-alert" class="size-4 shrink-0" />
+        {{ loginError }}
+      </p>
+
+      <form.Subscribe>
+        <template #default="{ canSubmit, isSubmitting }">
+          <UButton
+            block
+            size="lg"
+            type="submit"
+            class="mt-3.5 h-9 justify-center"
+            :disabled="!canSubmit"
+            :loading="isSubmitting"
+            :label="isSubmitting ? 'Signing in' : 'Continue'"
+          />
+        </template>
+      </form.Subscribe>
+    </form>
+
+    <footer class="absolute inset-x-0 bottom-6 flex justify-center gap-2 text-xs text-muted">
+      <span>v{{ version }}</span>
+      <span aria-hidden="true">·</span>
+      <a href="http://git.ouss.es/no-tion" target="_blank" rel="noopener noreferrer" class="focus-ring rounded-sm underline-offset-2 hover:text-default hover:underline">Source on GitHub</a>
+    </footer>
   </div>
 </template>

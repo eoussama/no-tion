@@ -1,35 +1,18 @@
-import type { TRuntimeConfig } from "../../core";
-
-import { env } from "node:process";
-import { SRuntimeConfig } from "../../core";
+import type { NuxtConfig } from "nuxt/schema";
 
 import pgk from "../../package.json" assert { type: "json" };
 
 
 
-function getEnvVars(): TRuntimeConfig {
-  return SRuntimeConfig.parse({
-    secret: env.NUXT_SECRET,
-    password: env.NUXT_PASSWORD,
-    notionApiKey: env.NUXT_NOTION_API_KEY,
-  });
-}
-
 /**
  * @description
- * Defines the Nuxt application configuration, including runtime configuration and HTML head settings.
+ * Defines the shared Nuxt application configuration (HTML head settings).
+ * Runtime secrets are declared in `nuxt.config.ts` and validated at server startup by `server/plugins/env.ts`.
  *
- * @returns An object containing the runtime configuration and app settings for the Nuxt application.
+ * @returns An object containing the app settings for the Nuxt application.
  */
-export function defineConfig() {
-  const config = getEnvVars();
-
+export function defineConfig(): Pick<NuxtConfig, "app"> {
   return {
-    runtimeConfig: {
-      secret: config.secret,
-      password: config.password,
-      notionApiKey: config.notionApiKey,
-    },
     app: {
       head: {
         htmlAttrs: {

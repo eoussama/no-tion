@@ -1,21 +1,44 @@
-export default defineNuxtPlugin(() => {
+import { useAuthStore } from "~/stores";
+
+
+
+function getRequestUrl(request: Request | string): string {
+  return typeof request === "string" ? request : request.url;
+}
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const toast = useToast();
+
   return {
     provide: {
       apiFetch: $fetch.create({
         baseURL: "/api",
         credentials: "include",
-        headers: useRequestHeaders(["cookie"]),
 
-        async onResponseError({ response: { _data: data } }) {
-          if (data.error) {
-            if (data.statusCode === 401) {
-              useAuthStore().logout();
-              // TODO: show toast the user about the session expiration
+        async onResponseError({ request, response }) {
+          const url = getRequestUrl(request);
+
+          // Login errors (wrong password, throttling) are shown inline by the login page,
+          // lookup errors inline by the search field (a toast per keystroke would be noise).
+          if (url.endsWith("/auth/login") || url.includes("/lookup/")) {
+            return;
+          }
+
+          const status = getErrorStatus(response._data) ?? response.status;
+
+          if (status === 401) {
+            const auth = await nuxtApp.runWithContext(() => useAuthStore());
+
+            if (auth.isLoggedIn) {
+              toast.add({ title: "Session expired", description: "Please sign in again.", color: "warning", icon: "i-lucide-lock" });
             }
 
-            throw new Error(data.message);
-            // TODO: show toast of the error message to the user
+            auth.reset();
+
+            return;
           }
+
+          toast.add({ title: "Request failed", description: getErrorMessage(response._data, response.statusText), color: "error", icon: "i-lucide-circle-alert" });
         },
       }),
     },

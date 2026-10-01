@@ -1,11 +1,13 @@
+import { SESSION_COOKIE } from "~~/server/utils";
+
+
+
+/**
+ * @description
+ * Clears the session cookie. Idempotent: logging out without a session also succeeds.
+ */
 export default defineEventHandler(async (event) => {
-  const cookie = getCookie(event, "session");
-
-  if (!cookie) {
-    throw createError({ status: 403, message: "User already not logged-in", statusText: "Forbidden" });
-  }
-
-  deleteCookie(event, "session");
+  deleteCookie(event, SESSION_COOKIE, { path: "/" });
 
   return createResponse(event, true, { message: "Logout successful" });
 });

@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.4",
   "private": true,
-  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
+  "packageManager": "pnpm@10.34.6+sha512.7e1ae66a83a9143c118cc1944f37cc4f2b8acddeda4b001cfa78908f6e46e45e15292739ca6c9d026426cc757e9318cc98c5551d6a16c165097b0028ba87b4e6",
   "description": "A personal Notion account manager with forms to ease data insertion into Notion databases.",
   "author": {
     "url": "https://ouss.es",
@@ -23,28 +23,36 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "dx lint",
-    "format": "prettier --write ."
+    "test": "vitest run"
   },
   "dependencies": {
     "@eoussama/core": "^0.0.4",
-    "@notionhq/client": "^5.9.0",
-    "@nuxt/ui": "^4.5.0",
-    "@pinia/nuxt": "0.11.3",
-    "@tanstack/vue-form": "^1.28.2",
-    "nuxt": "^4.3.1",
-    "pinia": "^3.0.4",
-    "tailwindcss": "^4.2.1",
-    "vue": "^3.5.28",
-    "vue-router": "^5.0.2",
-    "zod": "^4.3.6"
+    "@iconify-json/lucide": "^1.2.138",
+    "@notionhq/client": "^5.27.0",
+    "@nuxt/ui": "^4.11.2",
+    "@pinia/nuxt": "^1.0.2",
+    "@tanstack/query-async-storage-persister": "^5.104.0",
+    "@tanstack/query-persist-client-core": "^5.104.0",
+    "@tanstack/vue-form": "^1.33.5",
+    "@tanstack/vue-query": "^5.104.0",
+    "@vue/devtools-api": "^8.2.1",
+    "@vueuse/nuxt": "^15.0.0",
+    "idb-keyval": "^6.3.0",
+    "nuxt": "^4.5.2",
+    "pinia": "^4.0.3",
+    "tailwindcss": "^4.3.3",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eoussama/dx": "^0.0.4",
-    "@types/node": "^25.2.3",
-    "vue-tsc": "^3.2.4"
+    "@types/node": "^26.6.3",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.3",
+    "vue-tsc": "^3.3.11"
   }
 }
