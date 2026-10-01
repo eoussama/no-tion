@@ -24,8 +24,12 @@
   },
 
   "features": {
-    "ghcr.io/devcontainers-extra/features/pnpm:2": {}
+    "ghcr.io/devcontainers-extra/features/pnpm:2": {
+      "version": "9.15.4"
+    }
   },
 
-  "postCreateCommand": "pnpm i"
+  "forwardPorts": [3000],
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
 }
