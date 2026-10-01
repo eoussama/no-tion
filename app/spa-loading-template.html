@@ -1,0 +1,49 @@
+<!--
+  Boot skeleton (SPA): painted before the app loads, in the theme colors, so there is no white flash.
+  The color mode is read from the @nuxtjs/color-mode preference (`nuxt-color-mode`) or `prefers-color-scheme`.
+-->
+<script>
+  (function () {
+    try {
+      var stored = localStorage.getItem("nuxt-color-mode");
+      var dark = stored === "dark" || ((!stored || stored === "system") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.classList.add(dark ? "dark" : "light");
+      document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    }
+    catch (e) {}
+  })();
+</script>
+<style>
+  :root { --b: #ffffff; --s: #f7f7f5; --l: #e9e9e7; --k: rgba(55, 53, 47, 0.08); }
+  .dark { --b: #191919; --s: #202020; --l: #2f2f2f; --k: rgba(255, 255, 255, 0.07); }
+  html, body { margin: 0; background: var(--b); }
+  #nt-boot { position: fixed; inset: 0; display: flex; background: var(--b); }
+  #nt-boot .side { width: 240px; flex-shrink: 0; background: var(--s); border-right: 1px solid var(--l); padding: 14px 16px; box-sizing: border-box; }
+  #nt-boot .main { flex: 1; min-width: 0; padding: 96px 96px 0; box-sizing: border-box; }
+  #nt-boot .bar { height: 12px; border-radius: 4px; background: var(--k); margin-bottom: 14px; animation: nt-pulse 1.4s ease-in-out infinite; }
+  #nt-boot .logo { display: flex; gap: 10px; align-items: center; margin-bottom: 26px; }
+  #nt-boot .logo i { width: 24px; height: 24px; border-radius: 5px; background: var(--k); }
+  #nt-boot .title { height: 36px; width: 280px; max-width: 70%; border-radius: 6px; background: var(--k); margin: 18px 0 30px; animation: nt-pulse 1.4s ease-in-out infinite; }
+  #nt-boot .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; }
+  #nt-boot .card { aspect-ratio: 2 / 3; border-radius: 6px; background: var(--k); animation: nt-pulse 1.4s ease-in-out infinite; }
+  @keyframes nt-pulse { 50% { opacity: 0.55; } }
+  @media (max-width: 1023px) { #nt-boot .side { display: none; } #nt-boot .main { padding: 72px 16px 0; } }
+  @media (prefers-reduced-motion: reduce) { #nt-boot * { animation: none !important; } }
+</style>
+<div id="nt-boot" aria-busy="true" aria-label="Loading no-tion">
+  <div class="side">
+    <div class="logo"><i></i><div class="bar" style="width: 90px; margin: 0"></div></div>
+    <div class="bar" style="width: 70%"></div>
+    <div class="bar" style="width: 55%"></div>
+    <div class="bar" style="width: 40%; margin-top: 30px"></div>
+    <div class="bar" style="width: 75%"></div>
+    <div class="bar" style="width: 60%"></div>
+  </div>
+  <div class="main">
+    <div class="title"></div>
+    <div class="grid">
+      <div class="card"></div><div class="card"></div><div class="card"></div>
+      <div class="card"></div><div class="card"></div><div class="card"></div>
+    </div>
+  </div>
+</div>

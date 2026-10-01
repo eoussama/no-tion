@@ -1,38 +1,58 @@
-import { loginRequestSchema } from "~/core";
-import { getRuntimeConfig } from "~/server/utils/runtime-config";
+import { SLoginForm, tryCatch } from "~~/core";
+import { assertLoginNotThrottled, clearFailedLogins, generateToken, isPasswordValid, recordFailedLogin, SESSION_COOKIE, SESSION_TTL_SECONDS, verifyToken } from "~~/server/utils";
 
 
 
+/**
+ * @description
+ * Authentication with signed HTTP cookie using HMAC.
+ * An existing valid session short-circuits the login; a stale or invalid one is overwritten.
+ */
 export default defineEventHandler(async (event) => {
-  const config = getRuntimeConfig(event);
-  const body = await readBody(event);
-  const result = loginRequestSchema.safeParse(body);
+  const cookie = getCookie(event, SESSION_COOKIE);
 
-  if (!result.success) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: result.error.issues.at(0)?.message ?? "Invalid request payload",
-      cause: result.error,
-    });
+  if (cookie) {
+    const [, isLoggedIn] = await tryCatch(() => verifyToken(cookie));
+
+    if (isLoggedIn) {
+      return createResponse(event, true, { message: "Already logged in" });
+    }
   }
 
-  const { password } = result.data;
+  assertLoginNotThrottled(event);
 
-  if (password === config.password) {
-    const isDev = import.meta.dev;
+  const body = await readValidatedBody(event, SLoginForm.safeParse);
 
-    setCookie(event, "auth-token", "authenticated", {
-      httpOnly: true,
-      secure: !isDev,
-      maxAge: 60 * 60 * 24 * 7,
-      sameSite: "strict",
-    });
-
-    return { success: true };
+  if (!body.success) {
+    throw createError({ status: 400, message: body.error.issues[0]?.message ?? "Invalid request body", statusText: "Bad Request" });
   }
 
-  throw createError({
-    statusCode: 401,
-    statusMessage: "Invalid password",
+  const [passwordErr, isValid] = await tryCatch(async () => isPasswordValid(body.data.password));
+
+  if (passwordErr) {
+    throw createError({ status: 500, message: "Failed to check password", statusText: "Internal Server Error" });
+  }
+
+  if (!isValid) {
+    recordFailedLogin(event);
+    throw createError({ status: 401, message: "Invalid password", statusText: "Unauthorized" });
+  }
+
+  const [err, token] = await tryCatch(async () => generateToken());
+
+  if (err) {
+    throw createError({ status: 500, message: "Failed to generate token", statusText: "Internal Server Error" });
+  }
+
+  clearFailedLogins(event);
+
+  setCookie(event, SESSION_COOKIE, token, {
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax",
+    maxAge: SESSION_TTL_SECONDS,
+    secure: !import.meta.dev,
   });
+
+  return createResponse(event, true, { message: "Login successful" });
 });

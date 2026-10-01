@@ -1,86 +1,264 @@
-/* color palette from <https://github.com/vuejs/theme> */
-:root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+@import "tailwindcss";
+@import "@nuxt/ui";
 
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
+/*
+ * no-tion design tokens (Notion look, light + dark).
+ *
+ * - `@theme static` registers the `notion` blue scale (Nuxt UI `primary`, see app/app.config.ts) and the font stack.
+ * - `:root` / `.dark` override Nuxt UI's semantic variables (--ui-bg, --ui-text, --ui-border, ...) and define the
+ *   app tokens (--notion-*) the components use through the `@theme inline` utilities below
+ *   (`bg-side`, `bg-hover`, `bg-field`, `ring-field-line`, `text-link`, `bg-tag-blue`, `bg-dot-green`, `shadow-card`, ...).
+ */
 
-  --vt-c-indigo: #2c3e50;
+@theme static {
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Noto Color Emoji";
 
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
-
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  /* Notion blue, centered on #2383e2; 600 (#1a73cf) is the accent used under white text (4.9:1). */
+  --color-notion-50: #eef6fd;
+  --color-notion-100: #d9eafb;
+  --color-notion-200: #b5d6f6;
+  --color-notion-300: #86bcef;
+  --color-notion-400: #4f9ee9;
+  --color-notion-500: #2383e2;
+  --color-notion-600: #1a73cf;
+  --color-notion-700: #155fae;
+  --color-notion-800: #144d8b;
+  --color-notion-900: #133f70;
+  --color-notion-950: #0d2846;
 }
 
-/* semantic color variables for this project */
-:root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
+@theme inline {
+  --color-side: var(--notion-side);
+  --color-side-text: var(--notion-side-text);
+  --color-hover: var(--notion-hover);
+  --color-active: var(--notion-active);
+  --color-field: var(--notion-input);
+  --color-field-line: var(--notion-input-line);
+  --color-pop: var(--notion-elev);
+  --color-card: var(--notion-card-bg);
+  --color-link: var(--notion-link);
+  --color-accent-soft: var(--notion-accent-soft);
+  --color-faint: var(--notion-faint);
+  --color-focus: var(--notion-focus);
+  --color-warn-bg: var(--notion-warn-bg);
+  --color-warn-text: var(--notion-warn-text);
+  --color-overlay: var(--notion-overlay);
 
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
+  --color-tag-text: var(--notion-tag-text);
+  --color-tag-default: var(--notion-tag-default);
+  --color-tag-gray: var(--notion-tag-gray);
+  --color-tag-brown: var(--notion-tag-brown);
+  --color-tag-orange: var(--notion-tag-orange);
+  --color-tag-yellow: var(--notion-tag-yellow);
+  --color-tag-green: var(--notion-tag-green);
+  --color-tag-blue: var(--notion-tag-blue);
+  --color-tag-purple: var(--notion-tag-purple);
+  --color-tag-pink: var(--notion-tag-pink);
+  --color-tag-red: var(--notion-tag-red);
 
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
+  --color-dot-default: var(--notion-dot-gray);
+  --color-dot-gray: var(--notion-dot-gray);
+  --color-dot-brown: var(--notion-dot-brown);
+  --color-dot-orange: var(--notion-dot-orange);
+  --color-dot-yellow: var(--notion-dot-yellow);
+  --color-dot-green: var(--notion-dot-green);
+  --color-dot-blue: var(--notion-dot-blue);
+  --color-dot-purple: var(--notion-dot-purple);
+  --color-dot-pink: var(--notion-dot-pink);
+  --color-dot-red: var(--notion-dot-red);
 
-  --section-gap: 160px;
+  --shadow-card: var(--notion-card);
+  --shadow-pop: var(--notion-pop);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
+:root {
+  --ui-radius: 0.25rem; /* rounded-md = 6px controls, rounded-sm = 4px */
+  --ui-header-height: 2.75rem; /* 44px top bar */
 
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
+  /* White text on the accent needs the 600 shade (Nuxt UI defaults to 500 / 400). */
+  --ui-primary: var(--ui-color-primary-600);
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
+  --ui-bg: #ffffff;
+  --ui-bg-muted: #f7f7f5;
+  --ui-bg-elevated: #f1f1ef;
+  --ui-bg-accented: #e9e9e7;
+  --ui-text: #37352f;
+  --ui-text-highlighted: #37352f;
+  --ui-text-toned: #5f5e5b;
+  --ui-text-muted: #6f6e6a; /* Notion's #787774, darkened for 4.5:1 on the sidebar and hover washes */
+  --ui-text-dimmed: #a5a29a;
+  --ui-border: #e9e9e7;
+  --ui-border-muted: #e9e9e7;
+  --ui-border-accented: #dcdbd8;
+
+  --notion-side: #f7f7f5;
+  --notion-side-text: #5f5e5b;
+  --notion-elev: #ffffff;
+  --notion-card-bg: #ffffff;
+  --notion-faint: #a5a29a;
+  --notion-hover: rgba(55, 53, 47, 0.06);
+  --notion-active: rgba(55, 53, 47, 0.08);
+  --notion-input: #f7f6f3;
+  --notion-input-line: rgba(15, 15, 15, 0.1);
+  --notion-link: #1a6dc4; /* 4.7:1 on accent-soft */
+  --notion-accent-soft: rgba(35, 131, 226, 0.08);
+  --notion-ring: rgba(35, 131, 226, 0.57);
+  --notion-focus: #2383e2;
+  --notion-card: rgba(15, 15, 15, 0.1) 0 0 0 1px, rgba(15, 15, 15, 0.1) 0 2px 4px;
+  --notion-pop: rgba(15, 15, 15, 0.05) 0 0 0 1px, rgba(15, 15, 15, 0.1) 0 3px 6px, rgba(15, 15, 15, 0.2) 0 9px 24px;
+  --notion-overlay: rgba(15, 15, 15, 0.28);
+  --notion-warn-bg: #fbecdd;
+  --notion-warn-text: #9a4e0b;
+
+  --notion-tag-text: #32302c;
+  --notion-tag-default: #e3e2e0;
+  --notion-tag-gray: #e3e2e0;
+  --notion-tag-brown: #eee0da;
+  --notion-tag-orange: #fadec9;
+  --notion-tag-yellow: #fdecc8;
+  --notion-tag-green: #dbeddb;
+  --notion-tag-blue: #d3e5ef;
+  --notion-tag-purple: #e8deee;
+  --notion-tag-pink: #f5e0e9;
+  --notion-tag-red: #ffe2dd;
+
+  --notion-dot-gray: #91918e;
+  --notion-dot-brown: #9f6b53;
+  --notion-dot-orange: #d9730d;
+  --notion-dot-yellow: #cb912f;
+  --notion-dot-green: #448361;
+  --notion-dot-blue: #337ea9;
+  --notion-dot-purple: #9065b0;
+  --notion-dot-pink: #c14c8a;
+  --notion-dot-red: #d44c47;
+}
+
+.dark {
+  --ui-primary: var(--ui-color-primary-600);
+
+  --ui-bg: #191919;
+  --ui-bg-muted: #202020;
+  --ui-bg-elevated: #252525;
+  --ui-bg-accented: #2f2f2f;
+  --ui-text: rgba(255, 255, 255, 0.81);
+  --ui-text-highlighted: rgba(255, 255, 255, 0.81);
+  --ui-text-toned: rgba(255, 255, 255, 0.6);
+  --ui-text-muted: rgba(255, 255, 255, 0.5);
+  --ui-text-dimmed: rgba(255, 255, 255, 0.28);
+  --ui-text-inverted: #ffffff;
+  --ui-border: #2f2f2f;
+  --ui-border-muted: #2f2f2f;
+  --ui-border-accented: #373737;
+
+  --notion-side: #202020;
+  --notion-side-text: rgba(255, 255, 255, 0.6);
+  --notion-elev: #252525;
+  --notion-card-bg: #202020;
+  --notion-faint: rgba(255, 255, 255, 0.28);
+  --notion-hover: rgba(255, 255, 255, 0.055);
+  --notion-active: rgba(255, 255, 255, 0.08);
+  --notion-input: rgba(255, 255, 255, 0.055);
+  --notion-input-line: rgba(255, 255, 255, 0.09);
+  --notion-link: #529cca;
+  --notion-accent-soft: rgba(35, 131, 226, 0.15);
+  --notion-ring: rgba(35, 131, 226, 0.6);
+  --notion-focus: #2383e2;
+  --notion-card: rgba(255, 255, 255, 0.094) 0 0 0 1px;
+  --notion-pop: rgba(255, 255, 255, 0.094) 0 0 0 1px, rgba(0, 0, 0, 0.3) 0 3px 6px, rgba(0, 0, 0, 0.4) 0 9px 24px;
+  --notion-overlay: rgba(0, 0, 0, 0.45);
+  --notion-warn-bg: rgba(255, 163, 68, 0.14);
+  --notion-warn-text: #ffa344;
+
+  --notion-tag-text: rgba(255, 255, 255, 0.88);
+  --notion-tag-default: #373737;
+  --notion-tag-gray: #373737;
+  --notion-tag-brown: #5c3b23;
+  --notion-tag-orange: #854c1d;
+  --notion-tag-yellow: #89632a;
+  --notion-tag-green: #2b593f;
+  --notion-tag-blue: #28456c;
+  --notion-tag-purple: #492f64;
+  --notion-tag-pink: #69314c;
+  --notion-tag-red: #6e3630;
+
+  --notion-dot-gray: #9b9b9b;
+  --notion-dot-brown: #937264;
+  --notion-dot-orange: #ffa344;
+  --notion-dot-yellow: #ca9849;
+  --notion-dot-green: #4dab9a;
+  --notion-dot-blue: #529cca;
+  --notion-dot-purple: #9d68d3;
+  --notion-dot-pink: #e255a1;
+  --notion-dot-red: #ff7369;
+}
+
+@layer base {
+  /* 14px base text; the root stays 16px so Nuxt UI's rem-based sizing is untouched. */
+  body {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  ::selection {
+    background: rgba(35, 131, 226, 0.28);
   }
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  font-weight: normal;
+/* Visible keyboard focus for the app's own controls (Nuxt UI components bring theirs). */
+@utility focus-ring {
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--notion-focus);
+    outline-offset: 1px;
+  }
 }
 
-body {
-  min-height: 100vh;
-  color: var(--color-text);
-  background: var(--color-background);
-  transition:
-    color 0.5s,
-    background-color 0.5s;
-  line-height: 1.6;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    "Fira Sans",
-    "Droid Sans",
-    "Helvetica Neue",
-    sans-serif;
-  font-size: 15px;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Notion-style menu row: 30px, 6px radius, hover wash. */
+@utility nav-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--notion-side-text);
+  font-weight: 500;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--notion-hover);
+  }
+}
+
+/*
+ * Clickable controls get a pointer cursor. Browsers default `<button>`, `<select>` and ARIA
+ * widget roles to the text/default cursor, which reads as inert; Tailwind's preflight doesn't
+ * change that either.
+ */
+@layer base {
+  a[href],
+  button:not(:disabled),
+  select:not(:disabled),
+  summary,
+  label[for],
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  input[type="range"]:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]),
+  [role="switch"]:not([aria-disabled="true"]),
+  [role="checkbox"]:not([aria-disabled="true"]),
+  [role="radio"]:not([aria-disabled="true"]),
+  [role="menuitem"]:not([aria-disabled="true"]),
+  [role="menuitemcheckbox"]:not([aria-disabled="true"]),
+  [role="option"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  select:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
 }

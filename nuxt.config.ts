@@ -1,41 +1,51 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineConfig } from "./server/utils/config.util";
+
+
+
 export default defineNuxtConfig({
-  compatibilityDate: "2024-11-01",
+  ssr: false,
+  compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
+  experimental: {
+    typedPages: true,
+  },
 
   typescript: {
     typeCheck: true,
     strict: true,
   },
 
-  runtimeConfig: {
-    notionApiKey: "",
-    password: "",
-  },
+  modules: ["@pinia/nuxt", "@nuxt/ui", "@vueuse/nuxt"],
+  css: ["~~/assets/css/main.css"],
 
-  app: {
-    head: {
-      htmlAttrs: {
-        lang: "en",
+  /** Components are referenced by file name (`<NotionTag>`, not `<DatabaseNotionTag>`). */
+  components: [{ path: "~/components", pathPrefix: false }],
+
+  /**
+   * Icons ship inside the client bundle (no runtime fetch), so the UI stays complete offline; anything missed falls back to the server endpoint.
+   * The scan covers the app and the Nuxt UI runtime (its default chevrons, close, check, loading icons).
+   */
+  icon: {
+    clientBundle: {
+      scan: {
+        globInclude: ["app/**/*.{vue,ts}", "core/**/*.ts", "node_modules/@nuxt/ui/dist/runtime/**/*.{vue,js}", "node_modules/@nuxt/ui/dist/shared/*.mjs"],
+        globExclude: [".nuxt/**", ".output/**"],
       },
-      title: "no-tion | Notion Database Manager",
-      meta: [
-        { charset: "utf-8" },
-        { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "description", content: "A personal Notion account manager with forms to automate data insertion into Notion databases" },
-        { name: "author", content: "Oussama Essamadi" },
-        { name: "keywords", content: "Notion, API, database, automation, forms, manager" },
-        { property: "og:title", content: "no-tion" },
-        { property: "og:description", content: "A personal Notion account manager with forms to automate data insertion into Notion databases" },
-        { property: "og:image", content: "/logo.png" },
-        { property: "og:type", content: "website" },
-      ],
-      link: [
-        { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-        { rel: "shortcut icon", type: "image/x-icon", href: "/favicon.ico" },
-      ],
+      sizeLimitKb: 512,
     },
   },
 
-  css: ["~/assets/css/main.css"],
+  /**
+   * Server-only secrets. Empty defaults, overridden at runtime by
+   * NUXT_SECRET, NUXT_PASSWORD, NUXT_NOTION_API_KEY and NUXT_TMDB_API_KEY.
+   * Validated at server startup by `server/plugins/env.ts`.
+   */
+  runtimeConfig: {
+    secret: "",
+    password: "",
+    notionApiKey: "",
+    tmdbApiKey: "",
+  },
+
+  ...defineConfig(),
 });

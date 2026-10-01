@@ -1,0 +1,35 @@
+{
+  "name": "Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:4-24-trixie",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Nuxtr.nuxt-vscode-extentions",
+        "bradlc.vscode-tailwindcss"
+      ],
+      "settings": {
+        "editor.tabSize": 2,
+        "files.associations": {
+          "*.css": "tailwindcss"
+        },
+        "editor.quickSuggestions": {
+          "strings": "on"
+        },
+        "tailwindCSS.classAttributes": ["class", "ui"],
+        "tailwindCSS.experimental.classRegex": [
+          ["ui:\\s*{([^)]*)\\s*}", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+        ]
+      }
+    }
+  },
+
+  "features": {
+    "ghcr.io/devcontainers-extra/features/pnpm:2": {
+      "version": "10.34.6"
+    }
+  },
+
+  "forwardPorts": [3000],
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
+}

@@ -1,13 +1,6 @@
 {
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./*"],
-      "@/*": ["./*"],
-      "~/core": ["./core/index.ts"],
-      "@/core": ["./core/index.ts"]
-    },
     "types": ["@eoussama/dx", "node"]
   },
   "exclude": ["node_modules", "dist"]

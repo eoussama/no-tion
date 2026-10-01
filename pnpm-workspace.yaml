@@ -1,0 +1,14 @@
+# Strip the runtime dependency that @eoussama/core@0.0.4 wrongly declares on @eoussama/dx
+# (an ESLint config). Drop once a fixed @eoussama/core is published.
+#
+# Force esbuild to the version the rest of the tree already uses (deduped elsewhere): fontless's own
+# dependency on esbuild ^0.27.0 pulls a vulnerable 0.27.x (GHSA-g7r4-m6w7-qqqr, dev-server only, Windows
+# only) instead of reusing it. Drop once @nuxt/fonts/fontless bumps that range.
+overrides:
+  "@eoussama/core>@eoussama/dx": "-"
+  esbuild: ^0.28.2
+
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - esbuild
+  - vue-demi
